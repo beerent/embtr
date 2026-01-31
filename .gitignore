@@ -1,0 +1,9 @@
+.next
+node_modules
+.env
+.env.local
+e2e/.auth/
+test-results/
+playwright-report/
+combined.log
+error.log

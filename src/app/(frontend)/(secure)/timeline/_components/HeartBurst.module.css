@@ -1,0 +1,27 @@
+.container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.particle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    animation: heartBurst 600ms ease-out forwards;
+    animation-delay: var(--delay);
+}
+
+@keyframes heartBurst {
+    0% {
+        transform: translate(-50%, -50%) translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+    }
+}

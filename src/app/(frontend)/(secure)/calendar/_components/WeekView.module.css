@@ -1,0 +1,164 @@
+.container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    animation: fadeInUp 400ms ease both;
+}
+
+.columns {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.column {
+    border-right: 1px solid var(--glass-border-subtle);
+    min-height: 300px;
+}
+
+.column:last-child {
+    border-right: none;
+}
+
+.todayColumn {
+    background: rgba(241, 78, 107, 0.04);
+    position: relative;
+}
+
+.todayColumn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-brand);
+}
+
+.colHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-base) var(--space-sm);
+    border-bottom: 1px solid var(--glass-border-subtle);
+}
+
+.dayName {
+    font-size: 0.6875rem;
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.dayNum {
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+}
+
+.todayNum {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--gradient-brand);
+    color: #fff;
+    font-weight: var(--font-weight-semibold);
+    box-shadow: var(--glow-primary);
+}
+
+.taskList {
+    padding: var(--space-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.taskCard {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-button);
+    background: var(--glass-bg);
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background var(--transition-smooth), transform var(--transition-smooth);
+    width: 100%;
+    font-family: inherit;
+}
+
+.taskCard:hover {
+    background: var(--glass-hover);
+    transform: translateY(-1px);
+}
+
+.complete {
+    opacity: 0.6;
+}
+
+.checkCircle {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+    font-size: 0;
+    transition: all var(--transition-smooth);
+}
+
+.complete .checkCircle {
+    background: var(--gradient-success);
+    border-color: transparent;
+    box-shadow: var(--glow-success);
+}
+
+.taskTitle {
+    font-size: 0.75rem;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.complete .taskTitle {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.emptyDay {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    padding: var(--space-base);
+}
+
+.quantityBadge {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.partialCount {
+    font-size: 0.5625rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}

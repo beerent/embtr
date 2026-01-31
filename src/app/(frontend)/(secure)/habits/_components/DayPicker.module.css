@@ -1,0 +1,39 @@
+.row {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.dayBtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dayBtn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(241, 78, 107, 0.06);
+}
+
+.active {
+    background: var(--gradient-brand);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: var(--shadow-primary);
+}
+
+.active:hover {
+    background: var(--gradient-brand-reverse);
+    border-color: transparent;
+    color: #fff;
+}

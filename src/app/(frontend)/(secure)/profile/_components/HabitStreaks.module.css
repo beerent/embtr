@@ -1,0 +1,80 @@
+.title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--space-base) 0;
+}
+
+.empty {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-base);
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.name {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.numbers {
+    font-size: 0.8125rem;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.current {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.separator {
+    color: var(--text-secondary);
+}
+
+.longest {
+    color: var(--text-secondary);
+}
+
+.barTrack {
+    height: 6px;
+    background: var(--glass-border);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.barFill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width var(--transition-smooth);
+    min-width: 2px;
+}

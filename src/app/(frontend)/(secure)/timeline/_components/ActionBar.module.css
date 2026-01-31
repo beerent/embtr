@@ -1,0 +1,38 @@
+.bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-base) var(--space-lg);
+    border-top: 1px solid var(--glass-border);
+}
+
+.action {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    transition: color var(--transition-smooth);
+    font-family: inherit;
+    padding: 0;
+}
+
+.action:hover {
+    color: var(--text-secondary);
+}
+
+.liked {
+    color: var(--color-primary);
+}
+
+.liked:hover {
+    color: var(--color-primary-hover);
+}
+
+.likeWrapper {
+    position: relative;
+    display: inline-flex;
+}

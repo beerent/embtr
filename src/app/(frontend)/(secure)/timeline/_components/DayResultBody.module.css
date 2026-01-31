@@ -1,0 +1,83 @@
+.container {
+    padding: 0 var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-base);
+}
+
+.description {
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.scoreRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.scoreLabel {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+.scoreValue {
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-semibold);
+    background: var(--gradient-success);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.dateLabel {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+}
+
+.taskList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.taskItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+.taskCheck {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--gradient-success);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+    font-size: 0.625rem;
+}
+
+.taskTitle {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.taskQuantity {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.overflow {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    font-style: italic;
+    padding-left: 24px;
+}

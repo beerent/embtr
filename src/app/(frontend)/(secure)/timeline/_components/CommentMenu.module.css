@@ -1,0 +1,71 @@
+.wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.menuBtn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px;
+    border-radius: var(--radius-button);
+    transition: color var(--transition-smooth), background var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+}
+
+.wrapper:hover .menuBtn,
+.menuBtn:focus-visible {
+    opacity: 1;
+}
+
+.menuBtn:hover {
+    color: var(--text-primary);
+    background: var(--glass-hover);
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 2px;
+    background: var(--dropdown-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-button);
+    box-shadow: var(--shadow-lg);
+    min-width: 100px;
+    z-index: 10;
+    animation: scaleIn 150ms ease both;
+    overflow: hidden;
+}
+
+.dropdownItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    width: 100%;
+    padding: var(--space-xs) var(--space-sm);
+    background: none;
+    border: none;
+    font-size: 0.75rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background var(--transition-smooth);
+    text-align: left;
+}
+
+.dropdownItem:hover {
+    background: var(--glass-hover);
+}
+
+.danger {
+    color: var(--color-error);
+}
+
+.danger:hover {
+    background: rgba(211, 47, 47, 0.1);
+}

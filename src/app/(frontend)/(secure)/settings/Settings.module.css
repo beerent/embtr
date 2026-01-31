@@ -1,0 +1,118 @@
+.settingRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+}
+
+.settingInfo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.settingLabel {
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.settingDesc {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+.toggle {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: var(--text-muted);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background var(--transition-smooth);
+}
+
+.slider::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-spring);
+}
+
+.toggle input:checked + .slider {
+    background: var(--gradient-brand);
+    box-shadow: var(--glow-primary);
+}
+
+.toggle input:checked + .slider::before {
+    transform: translateX(20px);
+}
+
+.twitchActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-shrink: 0;
+}
+
+.linkedBadge {
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-semibold);
+    color: #9146FF;
+    background: rgba(145, 70, 255, 0.15);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-button);
+    white-space: nowrap;
+}
+
+.unlinkButton {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-button);
+    padding: var(--space-xs) var(--space-md);
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+    white-space: nowrap;
+}
+
+.unlinkButton:hover:not(:disabled) {
+    color: var(--color-error);
+    border-color: var(--color-error);
+}
+
+.unlinkButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.successMessage {
+    margin-top: var(--space-base);
+    font-size: 0.8125rem;
+    color: var(--color-success);
+}
+
+.errorMessage {
+    margin-top: var(--space-base);
+    font-size: 0.8125rem;
+    color: var(--color-error);
+}

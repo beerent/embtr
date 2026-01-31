@@ -1,0 +1,292 @@
+/* === Google Fonts === */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+/* === CSS Custom Properties (Design Tokens) === */
+:root {
+    /* Primary brand */
+    --color-primary: #F14E6B;
+    --color-primary-hover: #d9445f;
+    --color-secondary: #9154FF;
+
+    /* Semantic */
+    --color-success: #25B24A;
+    --color-warning: #FFC100;
+    --color-error: #D32F2F;
+
+    /* Typography */
+    --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+
+    /* Spacing */
+    --space-xs: 3px;
+    --space-sm: 6px;
+    --space-md: 9px;
+    --space-base: 12px;
+    --space-lg: 24px;
+    --space-xl: 36px;
+    --space-2xl: 48px;
+
+    /* Radii */
+    --radius-card: 12px;
+    --radius-button: 8px;
+    --radius-input: 8px;
+    --radius-pill: 20px;
+
+    /* Gradients */
+    --gradient-brand: linear-gradient(135deg, #F14E6B, #9154FF);
+    --gradient-brand-reverse: linear-gradient(135deg, #9154FF, #F14E6B);
+    --gradient-success: linear-gradient(135deg, #25B24A, #20C997);
+
+    /* Layout */
+    --sidebar-width: 240px;
+    --sidebar-collapsed-width: 64px;
+    --header-height: 56px;
+
+    /* Transition */
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* === Dark Theme (default) === */
+html,
+html[data-theme-mode='dark'] {
+    --bg-heavy: #000000;
+    --bg-medium: #121212;
+    --bg-light: #303030;
+    --bg-card: #282828;
+    --text-primary: #FFFFFF;
+    --text-secondary: #A6A6A6;
+    --text-muted: #666666;
+    --border-color: #303030;
+    --card-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+    --input-bg: #121212;
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    --dropdown-bg: #1e1e1e;
+    --scrollbar-thumb: #444;
+    --scrollbar-track: #1a1a1a;
+
+    /* Glass system */
+    --glass-bg: rgba(40, 40, 40, 0.6);
+    --glass-bg-heavy: rgba(20, 20, 20, 0.8);
+    --glass-bg-modal: rgba(30, 30, 30, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-border-subtle: rgba(255, 255, 255, 0.04);
+    --glass-hover: rgba(255, 255, 255, 0.06);
+
+    /* Shadow scale */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5);
+    --shadow-primary: 0 4px 14px rgba(241, 78, 107, 0.3);
+    --shadow-brand: 0 4px 14px rgba(241, 78, 107, 0.2), 0 2px 8px rgba(145, 84, 255, 0.15);
+    --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(241, 78, 107, 0.1);
+
+    /* Glow effects */
+    --glow-primary: 0 0 12px rgba(241, 78, 107, 0.4);
+    --glow-secondary: 0 0 12px rgba(145, 84, 255, 0.4);
+    --glow-success: 0 0 12px rgba(37, 178, 74, 0.4);
+
+    color-scheme: dark;
+}
+
+/* === Light Theme === */
+html[data-theme-mode='light'] {
+    --bg-heavy: #FFFFFF;
+    --bg-medium: #EDEDED;
+    --bg-light: #D4D4D4;
+    --bg-card: #FFFFFF;
+    --text-primary: #121212;
+    --text-secondary: gray;
+    --text-muted: #999999;
+    --border-color: #e0e0e0;
+    --card-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+    --input-bg: #FFFFFF;
+    --overlay-bg: rgba(0, 0, 0, 0.3);
+    --dropdown-bg: #FFFFFF;
+    --scrollbar-thumb: #ccc;
+    --scrollbar-track: #f0f0f0;
+
+    /* Glass system */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-bg-heavy: rgba(255, 255, 255, 0.85);
+    --glass-bg-modal: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-border-subtle: rgba(0, 0, 0, 0.04);
+    --glass-hover: rgba(0, 0, 0, 0.04);
+
+    /* Shadow scale */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+    --shadow-primary: 0 4px 14px rgba(241, 78, 107, 0.2);
+    --shadow-brand: 0 4px 14px rgba(241, 78, 107, 0.12), 0 2px 8px rgba(145, 84, 255, 0.1);
+    --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(241, 78, 107, 0.08);
+
+    /* Glow effects */
+    --glow-primary: 0 0 12px rgba(241, 78, 107, 0.25);
+    --glow-secondary: 0 0 12px rgba(145, 84, 255, 0.25);
+    --glow-success: 0 0 12px rgba(37, 178, 74, 0.25);
+
+    color-scheme: light;
+}
+
+/* === CSS Reset === */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-normal);
+    background-color: var(--bg-medium);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+    background-image:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(145, 84, 255, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(241, 78, 107, 0.05) 0%, transparent 70%);
+}
+
+html[data-theme-mode='light'] body {
+    background-image:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(145, 84, 255, 0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(241, 78, 107, 0.03) 0%, transparent 70%);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--color-primary-hover);
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    background: none;
+    color: inherit;
+}
+
+input, textarea, select {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* === Scrollbar Styling === */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* === Keyframe Animations === */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(241, 78, 107, 0.3); }
+    50% { box-shadow: 0 0 16px rgba(241, 78, 107, 0.5); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes checkPop {
+    0% { transform: scale(0.8); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+/* === Theme Transition === */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+    transition: background-color var(--transition-normal),
+                color var(--transition-normal),
+                border-color var(--transition-normal),
+                box-shadow var(--transition-normal) !important;
+}

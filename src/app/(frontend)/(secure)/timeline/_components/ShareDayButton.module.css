@@ -1,0 +1,27 @@
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+    padding: var(--space-base);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background var(--transition-smooth), color var(--transition-smooth), box-shadow var(--transition-smooth);
+    font-family: inherit;
+    animation: fadeInUp 400ms ease both;
+}
+
+.button:hover {
+    background: var(--glass-hover);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-brand);
+}

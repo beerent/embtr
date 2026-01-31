@@ -1,0 +1,111 @@
+.container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    animation: fadeInUp 400ms ease both;
+}
+
+.headerRow {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.headerCell {
+    padding: var(--space-md);
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.cell {
+    min-height: 100px;
+    border-right: 1px solid var(--glass-border-subtle);
+    border-bottom: 1px solid var(--glass-border-subtle);
+    padding: var(--space-sm);
+    cursor: pointer;
+    transition: background var(--transition-smooth);
+}
+
+.cell:nth-child(7n) {
+    border-right: none;
+}
+
+.cell:hover {
+    background: rgba(241, 78, 107, 0.04);
+}
+
+.outside {
+    opacity: 0.35;
+}
+
+.dayNumber {
+    margin-bottom: var(--space-xs);
+}
+
+.dayNumber span {
+    font-size: 0.8125rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+}
+
+.today {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--gradient-brand);
+    color: #fff;
+    font-weight: var(--font-weight-semibold);
+    box-shadow: var(--glow-primary);
+}
+
+.taskList {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.taskPill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs);
+    padding: 2px var(--space-sm);
+    border-radius: 3px;
+    background: var(--glass-bg);
+    border-left: 3px solid var(--color-primary);
+    font-size: 0.6875rem;
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+.taskTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.checkIcon {
+    color: var(--color-success);
+    flex-shrink: 0;
+}
+
+.more {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    padding-left: var(--space-sm);
+}

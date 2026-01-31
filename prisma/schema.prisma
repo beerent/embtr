@@ -1,0 +1,215 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  password     String?
+  displayName  String?
+  email        String?   @unique
+  bio          String?
+  photoUrl     String?
+  bannerUrl    String?
+  timezone     String    @default("UTC")
+  accountSetup Boolean   @default(false)
+  hardMode     Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  habits         Habit[]
+  scheduledHabits ScheduledHabit[]
+  plannedDays    PlannedDay[]
+  habitStreaks   HabitStreak[]
+  dayResults     DayResult[]
+  comments       Comment[]
+  likes          Like[]
+  timelinePosts  TimelinePost[]
+  twitchAccount  TwitchAccount?
+
+  @@map("users")
+}
+
+model Habit {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  title       String
+  description String?
+  iconName    String    @default("bx-check-circle")
+  iconColor   String    @default("#4e73df")
+  isArchived  Boolean   @default(false)
+  quantity    Float     @default(1)
+  unit        String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user             User              @relation(fields: [userId], references: [id])
+  scheduledHabits  ScheduledHabit[]
+  habitStreaks     HabitStreak[]
+
+  @@map("habits")
+}
+
+model ScheduledHabit {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  habitId     Int
+  dayOfWeek   Int       // 0=Sunday, 6=Saturday
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user    User   @relation(fields: [userId], references: [id])
+  habit   Habit  @relation(fields: [habitId], references: [id])
+
+  @@unique([userId, habitId, dayOfWeek])
+  @@map("scheduled_habits")
+}
+
+model PlannedDay {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  date        String    // YYYY-MM-DD format
+  status      String    @default("incomplete") // incomplete, complete, partial
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id])
+  plannedTasks PlannedTask[]
+  dayResult    DayResult?
+  timelinePosts TimelinePost[]
+
+  @@unique([userId, date])
+  @@map("planned_days")
+}
+
+model PlannedTask {
+  id           Int       @id @default(autoincrement())
+  plannedDayId Int
+  habitId      Int?
+  title        String
+  description  String?
+  status       String    @default("incomplete") // incomplete, complete, skipped
+  sortOrder         Int       @default(0)
+  quantity          Float     @default(1)
+  completedQuantity Float     @default(0)
+  unit              String?
+  completedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  plannedDay PlannedDay @relation(fields: [plannedDayId], references: [id])
+
+  @@map("planned_tasks")
+}
+
+model HabitStreak {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  habitId       Int
+  currentStreak Int       @default(0)
+  longestStreak Int       @default(0)
+  lastCompleted String?   // YYYY-MM-DD
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id])
+  habit Habit @relation(fields: [habitId], references: [id])
+
+  @@unique([userId, habitId])
+  @@map("habit_streaks")
+}
+
+model DayResult {
+  id           Int       @id @default(autoincrement())
+  userId       Int
+  plannedDayId Int       @unique
+  date         String    // YYYY-MM-DD
+  score        Float     @default(0) // 0-100
+  note         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user       User       @relation(fields: [userId], references: [id])
+  plannedDay PlannedDay @relation(fields: [plannedDayId], references: [id])
+
+  @@unique([userId, date])
+  @@map("day_results")
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  targetType String   // "day_result", "habit", "profile"
+  targetId   Int
+  body       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("comments")
+}
+
+model Like {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  targetType String    // "day_result", "comment"
+  targetId   Int
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, targetType, targetId])
+  @@map("likes")
+}
+
+enum TimelinePostType {
+  USER_POST
+  DAY_RESULT
+}
+
+model TimelinePost {
+  id           Int              @id @default(autoincrement())
+  userId       Int
+  type         TimelinePostType
+  body         String?
+  plannedDayId Int?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id])
+  plannedDay PlannedDay? @relation(fields: [plannedDayId], references: [id])
+
+  @@index([createdAt(sort: Desc)])
+  @@index([userId])
+  @@map("timeline_posts")
+}
+
+model TwitchAccount {
+  id                 Int      @id @default(autoincrement())
+  userId             Int      @unique
+  twitchId           String   @unique
+  twitchLogin        String
+  twitchDisplayName  String
+  twitchEmail        String?
+  twitchProfileImage String?
+  accessToken        String
+  refreshToken       String
+  tokenExpiresAt     DateTime
+  scopes             String
+  isSubscriber        Boolean   @default(false)
+  subscriberCheckedAt DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("twitch_accounts")
+}

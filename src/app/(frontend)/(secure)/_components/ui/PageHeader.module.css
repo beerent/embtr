@@ -1,0 +1,10 @@
+.header {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-semibold);
+    background: var(--gradient-brand);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: var(--space-base);
+    animation: fadeInUp 300ms ease both;
+}

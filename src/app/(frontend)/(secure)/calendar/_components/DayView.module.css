@@ -1,0 +1,142 @@
+.container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    animation: fadeInUp 400ms ease both;
+}
+
+.dateHeader {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.dayName {
+    font-size: 1.125rem;
+    font-weight: var(--font-weight-semibold);
+    background: var(--gradient-brand);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.fullDate {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.progress {
+    padding: var(--space-base) var(--space-lg);
+    font-size: 0.8125rem;
+    font-weight: var(--font-weight-medium);
+    background: var(--gradient-brand);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.empty {
+    padding: var(--space-2xl);
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+}
+
+.habitRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-base);
+    padding: var(--space-base) var(--space-lg);
+    border: none;
+    border-bottom: 1px solid var(--glass-border);
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    transition: background var(--transition-smooth), transform var(--transition-smooth);
+    width: 100%;
+    font-family: inherit;
+}
+
+.habitRow:last-child {
+    border-bottom: none;
+}
+
+.habitRow:hover {
+    background: var(--glass-hover);
+    transform: translateX(4px);
+}
+
+.checkbox {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+    transition: all var(--transition-smooth);
+}
+
+.complete .checkbox {
+    background: var(--gradient-success);
+    border-color: transparent;
+    box-shadow: var(--glow-success);
+    animation: checkPop 300ms ease both;
+}
+
+.habitInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.habitTitle {
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+}
+
+.complete .habitTitle {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.habitDesc {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+.complete .habitDesc {
+    color: var(--text-muted);
+}
+
+.quantityProgress {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.partialCount {
+    font-size: 0.6875rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}

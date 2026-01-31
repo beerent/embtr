@@ -1,0 +1,23 @@
+.title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--space-base) 0;
+}
+
+.empty {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.chartContainer {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.chart {
+    width: 100%;
+    height: auto;
+    min-width: 400px;
+}
