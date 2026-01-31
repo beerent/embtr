@@ -28,6 +28,7 @@ export function CommentMenu({ onEdit, onDelete }: CommentMenuProps) {
         <div className={styles.wrapper} ref={ref}>
             <button
                 className={styles.menuBtn}
+                data-comment-menu-btn
                 onClick={() => setOpen(!open)}
                 aria-label="Comment options"
             >

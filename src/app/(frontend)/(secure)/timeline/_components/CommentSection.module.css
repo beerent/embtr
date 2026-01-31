@@ -43,7 +43,6 @@
 .commentHeader {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: var(--space-sm);
 }
 
@@ -65,6 +64,10 @@
     height: 12px;
     color: var(--color-primary);
     flex-shrink: 0;
+}
+
+.comment:hover [data-comment-menu-btn] {
+    opacity: 1;
 }
 
 .commentBody {
