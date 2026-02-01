@@ -35,4 +35,36 @@ export class DayResultDao extends BaseDao {
             orderBy: { date: 'asc' },
         });
     }
+
+    async getLeaderboardByDateRange(startDate: string, endDate: string) {
+        const grouped = await this.client.dayResult.groupBy({
+            by: ['userId'],
+            where: {
+                score: 100,
+                date: { gte: startDate, lte: endDate },
+            },
+            _count: { id: true },
+            orderBy: { _count: { id: 'desc' } },
+        });
+
+        if (grouped.length === 0) return [];
+
+        const userIds = grouped.map((g: { userId: number }) => g.userId);
+        const users = await this.client.user.findMany({
+            where: { id: { in: userIds } },
+            select: { id: true, username: true, photoUrl: true },
+        });
+
+        const userMap = new Map(users.map((u: { id: number; username: string; photoUrl: string | null }) => [u.id, u]));
+
+        return grouped.map((g: { userId: number; _count: { id: number } }) => {
+            const user = userMap.get(g.userId);
+            return {
+                userId: g.userId,
+                username: user?.username ?? 'Unknown',
+                photoUrl: user?.photoUrl ?? null,
+                perfectDays: g._count.id,
+            };
+        });
+    }
 }

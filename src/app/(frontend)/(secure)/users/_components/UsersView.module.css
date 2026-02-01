@@ -1,0 +1,106 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-base);
+    padding: var(--space-base) var(--space-lg);
+    border-radius: var(--radius-base);
+    transition: background var(--transition-smooth);
+}
+
+.row:hover {
+    background: var(--bg-medium);
+}
+
+.currentUser {
+    border-left: 3px solid var(--color-primary);
+    background: var(--bg-medium);
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--bg-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatarInitials {
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--text-muted);
+}
+
+.info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.username {
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.handle {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    background: var(--bg-medium);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    flex-shrink: 0;
+}
+
+.roleBtn {
+    font-size: 0.8125rem;
+    font-weight: var(--font-weight-medium);
+    padding: var(--space-xs) var(--space-base);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-smooth);
+    flex-shrink: 0;
+}
+
+.roleBtn:hover {
+    background: var(--bg-medium);
+    color: var(--text-primary);
+}
+
+.roleBtn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.roleBtnRemove:hover {
+    border-color: var(--color-danger, #e74c3c);
+    color: var(--color-danger, #e74c3c);
+}

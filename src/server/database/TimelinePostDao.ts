@@ -8,6 +8,20 @@ const POST_INCLUDE = {
             dayResult: true,
         },
     },
+    challenge: {
+        select: {
+            id: true,
+            title: true,
+            description: true,
+            award: true,
+            iconName: true,
+            iconColor: true,
+            startDate: true,
+            endDate: true,
+            requiredDaysPerWeek: true,
+            _count: { select: { participants: true } },
+        },
+    },
 };
 
 export class TimelinePostDao extends BaseDao {
@@ -15,7 +29,7 @@ export class TimelinePostDao extends BaseDao {
         super('TimelinePostDao', client);
     }
 
-    async create(data: { userId: number; type: string; body?: string | null; plannedDayId?: number | null }) {
+    async create(data: { userId: number; type: string; body?: string | null; plannedDayId?: number | null; challengeId?: number | null }) {
         return this.client.timelinePost.create({
             data,
             include: POST_INCLUDE,

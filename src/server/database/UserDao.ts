@@ -29,6 +29,19 @@ export class UserDao extends BaseDao {
         });
     }
 
+    async getAll() {
+        return this.client.user.findMany({
+            select: {
+                id: true,
+                username: true,
+                displayName: true,
+                photoUrl: true,
+                role: true,
+            },
+            orderBy: { username: 'asc' },
+        });
+    }
+
     async update(id: number, data: {
         displayName?: string;
         bio?: string;
@@ -41,6 +54,13 @@ export class UserDao extends BaseDao {
         return this.client.user.update({
             where: { id },
             data,
+        });
+    }
+
+    async updateRole(id: number, role: string) {
+        return this.client.user.update({
+            where: { id },
+            data: { role },
         });
     }
 }

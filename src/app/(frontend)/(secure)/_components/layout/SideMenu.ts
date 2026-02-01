@@ -1,4 +1,4 @@
-export type IconName = 'sun' | 'home' | 'list-checks' | 'calendar' | 'globe' | 'user' | 'settings';
+export type IconName = 'sun' | 'home' | 'list-checks' | 'calendar' | 'globe' | 'trophy' | 'target' | 'users' | 'user' | 'settings';
 
 export interface MenuItem {
     path: string;
@@ -9,10 +9,11 @@ export interface MenuItem {
 
 export interface MenuSection {
     title: string;
+    adminOnly?: boolean;
     items: MenuItem[];
 }
 
-export const MENU_SECTIONS: MenuSection[] = [
+const ALL_SECTIONS: MenuSection[] = [
     {
         title: 'Main',
         items: [
@@ -41,6 +42,18 @@ export const MENU_SECTIONS: MenuSection[] = [
                 active: false,
             },
             {
+                path: '/leaderboard',
+                title: 'Leaderboard',
+                icon: 'trophy',
+                active: false,
+            },
+            {
+                path: '/challenges',
+                title: 'Challenges',
+                icon: 'target',
+                active: false,
+            },
+            {
                 path: '/profile',
                 title: 'Profile',
                 icon: 'user',
@@ -48,4 +61,26 @@ export const MENU_SECTIONS: MenuSection[] = [
             },
         ],
     },
+    {
+        title: 'Admin',
+        adminOnly: true,
+        items: [
+            {
+                path: '/users',
+                title: 'Users',
+                icon: 'users',
+                active: false,
+            },
+            {
+                path: '/challenges/manage',
+                title: 'Challenges',
+                icon: 'target',
+                active: false,
+            },
+        ],
+    },
 ];
+
+export function getMenuSections(role: string): MenuSection[] {
+    return ALL_SECTIONS.filter((section) => !section.adminOnly || role === 'admin');
+}

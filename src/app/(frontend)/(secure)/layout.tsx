@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 import { ModernLayout } from './_components/layout/modern/ModernLayout';
-import { MENU_SECTIONS } from './_components/layout/SideMenu';
+import { getMenuSections } from './_components/layout/SideMenu';
 
 import Providers from '@/app/_provider/Providers';
 import '@/app/globals.css';
@@ -45,7 +45,7 @@ export default async function RootLayout({
             </head>
             <body>
                 <Providers initialUser={session}>
-                    <ModernLayout menuSections={MENU_SECTIONS}>
+                    <ModernLayout menuSections={getMenuSections(session.role)}>
                         {children}
                     </ModernLayout>
                 </Providers>

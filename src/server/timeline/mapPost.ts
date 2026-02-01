@@ -35,6 +35,9 @@ export function mapPost(
             }));
     }
 
+    const isChallengePost = p.type === 'CHALLENGE_RESULT' || p.type === 'CHALLENGE_JOIN';
+    const challenge = isChallengePost && p.challenge ? p.challenge : null;
+
     return {
         id: p.id,
         type: p.type as TimelinePostType,
@@ -56,5 +59,14 @@ export function mapPost(
         dayScore,
         completedTasks,
         totalTaskCount,
+        challengeTitle: challenge?.title ?? null,
+        challengeAward: challenge?.award ?? null,
+        challengeId: challenge?.id ?? null,
+        challengeDescription: challenge?.description ?? null,
+        challengeIconColor: challenge?.iconColor ?? null,
+        challengeStartDate: challenge?.startDate ?? null,
+        challengeEndDate: challenge?.endDate ?? null,
+        challengeRequiredDaysPerWeek: challenge?.requiredDaysPerWeek ?? null,
+        challengeParticipantCount: challenge?._count?.participants ?? null,
     };
 }

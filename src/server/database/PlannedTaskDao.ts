@@ -60,4 +60,16 @@ export class PlannedTaskDao extends BaseDao {
             where: { plannedDayId, habitId },
         });
     }
+
+    async countCompletedByHabitAndDateRange(habitId: number, startDate: string, endDate: string): Promise<number> {
+        return this.client.plannedTask.count({
+            where: {
+                habitId,
+                status: 'complete',
+                plannedDay: {
+                    date: { gte: startDate, lte: endDate },
+                },
+            },
+        });
+    }
 }

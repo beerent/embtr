@@ -1,0 +1,39 @@
+.container {
+    padding: 0 var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-base);
+}
+
+.description {
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.resultRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.award {
+    font-size: 1.5rem;
+}
+
+.challengeTitle {
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.completedLabel {
+    font-size: 0.8125rem;
+    font-weight: var(--font-weight-medium);
+    background: var(--gradient-success);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

@@ -1,6 +1,8 @@
 export enum TimelinePostType {
     USER_POST = 'USER_POST',
     DAY_RESULT = 'DAY_RESULT',
+    CHALLENGE_RESULT = 'CHALLENGE_RESULT',
+    CHALLENGE_JOIN = 'CHALLENGE_JOIN',
 }
 
 export interface TimelinePostAuthor {
@@ -35,6 +37,16 @@ export interface TimelinePostData {
     dayScore: number | null;
     completedTasks: TimelineCompletedTask[];
     totalTaskCount: number | null;
+    // CHALLENGE_RESULT / CHALLENGE_JOIN (null for other types)
+    challengeTitle: string | null;
+    challengeAward: string | null;
+    challengeId: number | null;
+    challengeDescription: string | null;
+    challengeIconColor: string | null;
+    challengeStartDate: string | null;
+    challengeEndDate: string | null;
+    challengeRequiredDaysPerWeek: number | null;
+    challengeParticipantCount: number | null;
 }
 
 export interface TimelineCommentData {

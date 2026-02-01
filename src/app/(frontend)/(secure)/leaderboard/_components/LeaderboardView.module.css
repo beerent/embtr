@@ -1,0 +1,18 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-base);
+    flex-wrap: wrap;
+}
+
+.periodLabel {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}

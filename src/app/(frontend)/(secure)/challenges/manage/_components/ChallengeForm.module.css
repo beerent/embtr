@@ -1,0 +1,122 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    max-width: 640px;
+}
+
+.heading {
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.error {
+    font-size: 0.875rem;
+    color: var(--color-danger, #e74c3c);
+    padding: var(--space-sm) var(--space-base);
+    background: rgba(231, 76, 60, 0.1);
+    border-radius: var(--radius-base);
+}
+
+.label {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    font-size: 0.8125rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    flex: 1;
+}
+
+.input {
+    padding: var(--space-sm) var(--space-base);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+    transition: border-color var(--transition-smooth);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.textarea {
+    padding: var(--space-sm) var(--space-base);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color var(--transition-smooth);
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.colorInput {
+    width: 48px;
+    height: 36px;
+    padding: 2px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
+    background: var(--bg-base);
+    cursor: pointer;
+}
+
+.row {
+    display: flex;
+    gap: var(--space-base);
+}
+
+.formActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    padding-top: var(--space-base);
+}
+
+.cancelBtn {
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-medium);
+    padding: var(--space-sm) var(--space-lg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-smooth);
+}
+
+.cancelBtn:hover {
+    background: var(--bg-medium);
+    color: var(--text-primary);
+}
+
+.submitBtn {
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-semibold);
+    padding: var(--space-sm) var(--space-lg);
+    border: none;
+    border-radius: var(--radius-base);
+    background: var(--gradient-brand);
+    color: #fff;
+    cursor: pointer;
+    transition: opacity var(--transition-smooth);
+}
+
+.submitBtn:hover {
+    opacity: 0.9;
+}
+
+.submitBtn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}

@@ -88,3 +88,9 @@
     color: var(--color-success);
     border-color: rgba(37, 178, 74, 0.2);
 }
+
+.badgeChallengeResult {
+    background: linear-gradient(135deg, rgba(246, 185, 59, 0.15), rgba(255, 159, 67, 0.15));
+    color: #f6b93b;
+    border-color: rgba(246, 185, 59, 0.2);
+}

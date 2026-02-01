@@ -20,18 +20,21 @@ model User {
   timezone     String    @default("UTC")
   accountSetup Boolean   @default(false)
   hardMode     Boolean   @default(false)
+  role         String    @default("user")
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  habits         Habit[]
-  scheduledHabits ScheduledHabit[]
-  plannedDays    PlannedDay[]
-  habitStreaks   HabitStreak[]
-  dayResults     DayResult[]
-  comments       Comment[]
-  likes          Like[]
-  timelinePosts  TimelinePost[]
-  twitchAccount  TwitchAccount?
+  habits                  Habit[]
+  scheduledHabits         ScheduledHabit[]
+  plannedDays             PlannedDay[]
+  habitStreaks            HabitStreak[]
+  dayResults              DayResult[]
+  comments                Comment[]
+  likes                   Like[]
+  timelinePosts           TimelinePost[]
+  twitchAccount           TwitchAccount?
+  createdChallenges       Challenge[]              @relation("ChallengeCreator")
+  challengeParticipations ChallengeParticipant[]
 
   @@map("users")
 }
@@ -49,9 +52,10 @@ model Habit {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  user             User              @relation(fields: [userId], references: [id])
-  scheduledHabits  ScheduledHabit[]
-  habitStreaks     HabitStreak[]
+  user                 User                  @relation(fields: [userId], references: [id])
+  scheduledHabits      ScheduledHabit[]
+  habitStreaks         HabitStreak[]
+  challengeParticipant ChallengeParticipant?
 
   @@map("habits")
 }
@@ -173,6 +177,8 @@ model Like {
 enum TimelinePostType {
   USER_POST
   DAY_RESULT
+  CHALLENGE_RESULT
+  CHALLENGE_JOIN
 }
 
 model TimelinePost {
@@ -181,11 +187,13 @@ model TimelinePost {
   type         TimelinePostType
   body         String?
   plannedDayId Int?
+  challengeId  Int?
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 
   user       User        @relation(fields: [userId], references: [id])
   plannedDay PlannedDay? @relation(fields: [plannedDayId], references: [id])
+  challenge  Challenge?  @relation(fields: [challengeId], references: [id])
 
   @@index([createdAt(sort: Desc)])
   @@index([userId])
@@ -212,4 +220,47 @@ model TwitchAccount {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("twitch_accounts")
+}
+
+model Challenge {
+  id                  Int       @id @default(autoincrement())
+  title               String
+  description         String
+  iconName            String    @default("bx-check-circle")
+  iconColor           String    @default("#4e73df")
+  quantity            Float     @default(1)
+  unit                String?
+  startDate           String    // YYYY-MM-DD
+  endDate             String    // YYYY-MM-DD
+  requiredDaysPerWeek Int
+  award               String    @default("🏆")
+  createdById         Int
+  active              Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  createdBy      User                   @relation("ChallengeCreator", fields: [createdById], references: [id])
+  participants   ChallengeParticipant[]
+  timelinePosts  TimelinePost[]
+
+  @@map("challenges")
+}
+
+model ChallengeParticipant {
+  id          Int       @id @default(autoincrement())
+  challengeId Int
+  userId      Int
+  habitId     Int       @unique
+  status      String    @default("active") // active, completed, failed
+  joinedAt    DateTime  @default(now())
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  challenge Challenge @relation(fields: [challengeId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  habit     Habit     @relation(fields: [habitId], references: [id])
+
+  @@unique([challengeId, userId])
+  @@map("challenge_participants")
 }

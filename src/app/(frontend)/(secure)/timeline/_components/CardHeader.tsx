@@ -64,6 +64,12 @@ export function CardHeader({ author, createdAt, type, menu }: CardHeaderProps) {
                 </span>
             )}
 
+            {(type === TimelinePostType.CHALLENGE_RESULT || type === TimelinePostType.CHALLENGE_JOIN) && (
+                <span className={`${styles.badge} ${styles.badgeChallengeResult}`}>
+                    Challenge
+                </span>
+            )}
+
             {menu}
         </div>
     );

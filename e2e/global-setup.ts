@@ -11,7 +11,7 @@ setup('create test user and save auth state', async ({ page }) => {
     await page.locator('#signup-password').fill(password);
     await page.locator('#signup-confirm-password').fill(password);
 
-    await page.getByRole('button', { name: 'Sign Up' }).click();
+    await page.getByRole('button', { name: 'Sign Up', exact: true }).click();
 
     await page.waitForURL('**/dashboard', { timeout: 15_000 });
 

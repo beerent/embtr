@@ -30,6 +30,7 @@ export namespace Session {
             displayName: dbUser.displayName ?? undefined,
             photoUrl: dbUser.photoUrl ?? undefined,
             hardMode: dbUser.hardMode,
+            role: dbUser.role,
             hasTwitchLinked: !!twitchAccount,
         };
     };

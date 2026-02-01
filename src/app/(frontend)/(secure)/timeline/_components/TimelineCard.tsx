@@ -6,6 +6,8 @@ import { editPost, deletePost } from '@/server/timeline/actions';
 import { CardHeader } from './CardHeader';
 import { UserPostBody } from './UserPostBody';
 import { DayResultBody } from './DayResultBody';
+import { ChallengeResultBody } from './ChallengeResultBody';
+import { ChallengeJoinBody } from './ChallengeJoinBody';
 import { ActionBar } from './ActionBar';
 import { PostMenu } from './PostMenu';
 import styles from './TimelineCard.module.css';
@@ -99,6 +101,26 @@ export function TimelineCard({ post, onPostEdited, onPostDeleted }: TimelineCard
                 </div>
             ) : post.type === TimelinePostType.USER_POST ? (
                 <UserPostBody body={post.body} />
+            ) : post.type === TimelinePostType.CHALLENGE_RESULT ? (
+                <ChallengeResultBody
+                    body={post.body}
+                    challengeTitle={post.challengeTitle}
+                    challengeAward={post.challengeAward}
+                />
+            ) : post.type === TimelinePostType.CHALLENGE_JOIN ? (
+                <ChallengeJoinBody
+                    body={post.body}
+                    challengeId={post.challengeId}
+                    challengeTitle={post.challengeTitle}
+                    challengeAward={post.challengeAward}
+                    challengeDescription={post.challengeDescription}
+                    challengeIconColor={post.challengeIconColor}
+                    challengeStartDate={post.challengeStartDate}
+                    challengeEndDate={post.challengeEndDate}
+                    challengeRequiredDaysPerWeek={post.challengeRequiredDaysPerWeek}
+                    challengeParticipantCount={post.challengeParticipantCount}
+                    isOwnPost={post.isOwnPost}
+                />
             ) : (
                 <DayResultBody
                     body={post.body}
