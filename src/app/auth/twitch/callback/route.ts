@@ -12,6 +12,7 @@ import { Logger } from '@/shared/Logger';
 const logger = new Logger('TwitchCallback');
 
 export async function GET(request: NextRequest) {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.url;
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
     const state = searchParams.get('state');
@@ -19,12 +20,12 @@ export async function GET(request: NextRequest) {
 
     if (error) {
         logger.warn('Twitch OAuth denied:', error);
-        return NextResponse.redirect(new URL('/signin?error=twitch_denied', request.url));
+        return NextResponse.redirect(new URL('/signin?error=twitch_denied', baseUrl));
     }
 
     if (!code || !state) {
         logger.error('Missing code or state in callback');
-        return NextResponse.redirect(new URL('/signin?error=twitch_invalid', request.url));
+        return NextResponse.redirect(new URL('/signin?error=twitch_invalid', baseUrl));
     }
 
     const cookieStore = await cookies();
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     if (!storedState || storedState !== state) {
         logger.error('CSRF state mismatch');
-        return NextResponse.redirect(new URL('/signin?error=twitch_csrf', request.url));
+        return NextResponse.redirect(new URL('/signin?error=twitch_csrf', baseUrl));
     }
 
     try {
@@ -66,13 +67,13 @@ export async function GET(request: NextRequest) {
                     scopes,
                 });
                 await refreshSubscriberStatus(currentUserId, true);
-                return NextResponse.redirect(new URL('/settings?twitch=linked', request.url));
+                return NextResponse.redirect(new URL('/settings?twitch=linked', baseUrl));
             }
 
             const otherLink = await twitchAccountDao.getByTwitchId(twitchUser.id);
             if (otherLink) {
                 return NextResponse.redirect(
-                    new URL('/settings?error=twitch_already_linked', request.url)
+                    new URL('/settings?error=twitch_already_linked', baseUrl)
                 );
             }
 
@@ -90,7 +91,7 @@ export async function GET(request: NextRequest) {
             });
 
             await refreshSubscriberStatus(currentUserId, true);
-            return NextResponse.redirect(new URL('/settings?twitch=linked', request.url));
+            return NextResponse.redirect(new URL('/settings?twitch=linked', baseUrl));
         }
 
         // Unauthenticated — login or signup via Twitch
@@ -112,7 +113,7 @@ export async function GET(request: NextRequest) {
 
             await createSession(existingTwitchAccount.userId);
             await refreshSubscriberStatus(existingTwitchAccount.userId, true);
-            return NextResponse.redirect(new URL('/dashboard', request.url));
+            return NextResponse.redirect(new URL('/dashboard', baseUrl));
         }
 
         // New Twitch user — create account
@@ -156,9 +157,9 @@ export async function GET(request: NextRequest) {
             body: `${name} just joined Embtr! Welcome to the community!`,
         });
 
-        return NextResponse.redirect(new URL('/dashboard', request.url));
+        return NextResponse.redirect(new URL('/dashboard', baseUrl));
     } catch (err) {
         logger.error('Twitch OAuth callback error:', err);
-        return NextResponse.redirect(new URL('/signin?error=twitch_error', request.url));
+        return NextResponse.redirect(new URL('/signin?error=twitch_error', baseUrl));
     }
 }

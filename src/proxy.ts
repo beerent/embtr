@@ -26,6 +26,7 @@ async function verifySession(cookieValue: string): Promise<boolean> {
 }
 
 export async function proxy(request: NextRequest) {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.url;
     const { pathname } = request.nextUrl;
 
     // Public routes that don't require auth
@@ -39,16 +40,12 @@ export async function proxy(request: NextRequest) {
 
     // Redirect unauthenticated users to sign in
     if (!hasValidSession && !isPublicRoute) {
-        const url = request.nextUrl.clone();
-        url.pathname = '/signin';
-        return NextResponse.redirect(url);
+        return NextResponse.redirect(new URL('/signin', baseUrl));
     }
 
     // Redirect authenticated users away from auth pages
     if (hasValidSession && isPublicRoute) {
-        const url = request.nextUrl.clone();
-        url.pathname = '/dashboard';
-        return NextResponse.redirect(url);
+        return NextResponse.redirect(new URL('/dashboard', baseUrl));
     }
 
     return NextResponse.next();
