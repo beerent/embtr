@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Menu, PanelLeftClose, Sun, Moon, User, Settings, LogOut } from 'lucide-react';
+import { Menu, PanelLeftClose, Sun, Moon, User, Settings, LogOut, Bug } from 'lucide-react';
 
 import { SessionStore } from '@/client/store/SessionStore';
 import useThemeStore from '@/client/store/ThemeStore';
@@ -109,6 +109,10 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({ onToggleSidebar, isSidebarC
                     >
                         {dataThemeMode === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
+
+                    <Link href="/bugs" className={styles.action} title="Bug Reports">
+                        <Bug size={20} />
+                    </Link>
 
                     <div className={dropdownClass} ref={profileDropdown.ref}>
                         <button className={styles.profileButton} onClick={profileDropdown.toggle}>

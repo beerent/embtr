@@ -1,4 +1,4 @@
-export type IconName = 'sun' | 'home' | 'list-checks' | 'calendar' | 'globe' | 'trophy' | 'target' | 'users' | 'user' | 'settings';
+export type IconName = 'sun' | 'home' | 'list-checks' | 'calendar' | 'globe' | 'trophy' | 'target' | 'users' | 'user' | 'settings' | 'bug';
 
 export interface MenuItem {
     path: string;
@@ -51,6 +51,12 @@ const ALL_SECTIONS: MenuSection[] = [
                 path: '/challenges',
                 title: 'Challenges',
                 icon: 'target',
+                active: false,
+            },
+            {
+                path: '/bugs',
+                title: 'Bug Reports',
+                icon: 'bug',
                 active: false,
             },
             {

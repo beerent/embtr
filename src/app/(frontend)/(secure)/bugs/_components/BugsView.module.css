@@ -1,0 +1,62 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-base);
+    flex-wrap: wrap;
+}
+
+.filter {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-input);
+    padding: var(--space-sm) var(--space-base);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+}
+
+.filter:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.createBtn {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    background: var(--gradient-brand);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-button);
+    padding: var(--space-sm) var(--space-lg);
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: opacity var(--transition-smooth);
+}
+
+.createBtn:hover {
+    opacity: 0.9;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-base);
+}
+
+.empty {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    padding: var(--space-xxl) 0;
+}
