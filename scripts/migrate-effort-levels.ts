@@ -1,5 +1,5 @@
 /**
- * Post-migration script: backfill effortLevel from existing waterCost + scheduledDays.
+ * Post-migration script: backfill effortLevel from existing dropCost + scheduledDays.
  *
  * Run with: npx tsx scripts/migrate-effort-levels.ts
  */
@@ -10,9 +10,9 @@ type EffortLevel = 1 | 2 | 3 | 4 | 5;
 
 const EFFORT_BASE: Record<EffortLevel, number> = { 1: 2, 2: 5, 3: 10, 4: 16, 5: 24 };
 
-function reverseEffortLevel(waterCost: number, daysPerWeek: number): EffortLevel {
+function reverseEffortLevel(dropCost: number, daysPerWeek: number): EffortLevel {
     const freq = 0.4 + 0.6 * (Math.max(1, daysPerWeek) / 7);
-    const impliedBase = waterCost / freq;
+    const impliedBase = dropCost / freq;
     const bases = [2, 5, 10, 16, 24];
     let closest = 0;
     for (let i = 0; i < bases.length; i++) {
@@ -21,7 +21,7 @@ function reverseEffortLevel(waterCost: number, daysPerWeek: number): EffortLevel
     return (closest + 1) as EffortLevel;
 }
 
-function computeWaterCost(effortLevel: EffortLevel, daysPerWeek: number): number {
+function computeDropCost(effortLevel: EffortLevel, daysPerWeek: number): number {
     const clampedDays = Math.max(0, Math.min(7, daysPerWeek));
     const frequencyMultiplier = 0.4 + 0.6 * (clampedDays / 7);
     return Math.max(1, Math.round(EFFORT_BASE[effortLevel] * frequencyMultiplier));
@@ -41,16 +41,16 @@ async function main() {
         let updated = 0;
         for (const habit of habits) {
             const daysPerWeek = habit.scheduledHabits.length;
-            const effortLevel = reverseEffortLevel(habit.waterCost, daysPerWeek);
-            const newWaterCost = computeWaterCost(effortLevel, daysPerWeek);
+            const effortLevel = reverseEffortLevel(habit.dropCost, daysPerWeek);
+            const newDropCost = computeDropCost(effortLevel, daysPerWeek);
 
             await prisma.habit.update({
                 where: { id: habit.id },
-                data: { effortLevel, waterCost: newWaterCost },
+                data: { effortLevel, dropCost: newDropCost },
             });
 
             console.log(
-                `  Habit #${habit.id} "${habit.title}": waterCost ${habit.waterCost} -> effortLevel ${effortLevel} (${['', 'Minimal', 'Light', 'Moderate', 'Hard', 'All-In'][effortLevel]}), waterCost recalculated to ${newWaterCost}`
+                `  Habit #${habit.id} "${habit.title}": dropCost ${habit.dropCost} -> effortLevel ${effortLevel} (${['', 'Minimal', 'Light', 'Moderate', 'Hard', 'All-In'][effortLevel]}), dropCost recalculated to ${newDropCost}`
             );
             updated++;
         }

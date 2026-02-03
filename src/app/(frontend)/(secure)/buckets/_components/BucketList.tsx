@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus } from 'lucide-react';
 import { archiveBucket } from '@/server/buckets/actions';
-import type { BucketWithWater } from '@/shared/types/bucket';
+import type { BucketWithDrops } from '@/shared/types/bucket';
 import type { HabitWithSchedule } from '@/shared/types/habit';
 import { BucketCard } from './BucketCard';
 import { BucketForm } from './BucketForm';
@@ -12,23 +12,23 @@ import { ReservoirMeter } from './ReservoirMeter';
 import styles from './BucketList.module.css';
 
 interface BucketListProps {
-    buckets: BucketWithWater[];
+    buckets: BucketWithDrops[];
     habits: HabitWithSchedule[];
-    allocatedWater: number;
-    remainingWater: number;
+    allocatedDrops: number;
+    remainingDrops: number;
 }
 
-export function BucketList({ buckets, habits, allocatedWater, remainingWater }: BucketListProps) {
+export function BucketList({ buckets, habits, allocatedDrops, remainingDrops }: BucketListProps) {
     const router = useRouter();
     const [showForm, setShowForm] = useState(false);
-    const [editingBucket, setEditingBucket] = useState<BucketWithWater | undefined>();
+    const [editingBucket, setEditingBucket] = useState<BucketWithDrops | undefined>();
 
     const openCreate = () => {
         setEditingBucket(undefined);
         setShowForm(true);
     };
 
-    const openEdit = (bucket: BucketWithWater) => {
+    const openEdit = (bucket: BucketWithDrops) => {
         setEditingBucket(bucket);
         setShowForm(true);
     };
@@ -54,8 +54,8 @@ export function BucketList({ buckets, habits, allocatedWater, remainingWater }: 
         <>
             <ReservoirMeter
                 buckets={buckets}
-                allocatedWater={allocatedWater}
-                remainingWater={remainingWater}
+                allocatedDrops={allocatedDrops}
+                remainingDrops={remainingDrops}
             />
 
             <div className={styles.toolbar}>

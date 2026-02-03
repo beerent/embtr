@@ -76,7 +76,7 @@ export async function getTimelineFeed(
         }
     }
 
-    let habitBucketMap = new Map<number, { bucketId: number | null; bucketName: string | null; bucketColor: string | null; bucketIconName: string | null; waterCost: number }>();
+    let habitBucketMap = new Map<number, { bucketId: number | null; bucketName: string | null; bucketColor: string | null; bucketIconName: string | null; dropCost: number }>();
     if (habitIds.size > 0) {
         const habits = await prisma.habit.findMany({
             where: { id: { in: Array.from(habitIds) } },
@@ -88,7 +88,7 @@ export async function getTimelineFeed(
                 bucketName: (h as any).bucket?.name ?? null,
                 bucketColor: (h as any).bucket?.color ?? null,
                 bucketIconName: (h as any).bucket?.iconName ?? null,
-                waterCost: h.waterCost,
+                dropCost: h.dropCost,
             });
         }
     }

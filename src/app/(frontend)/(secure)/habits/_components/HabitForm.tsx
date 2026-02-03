@@ -8,9 +8,9 @@ import {
 } from 'lucide-react';
 import { createHabit, updateHabit } from '@/server/habits/actions';
 import { HabitWithSchedule } from '@/shared/types/habit';
-import type { BucketWithWater } from '@/shared/types/bucket';
+import type { BucketWithDrops } from '@/shared/types/bucket';
 import { RESERVOIR_CAPACITY } from '@/shared/types/bucket';
-import { EFFORT_LEVELS, computeWaterCost, explainWaterCost, type EffortLevel } from '@/shared/effort';
+import { EFFORT_LEVELS, computeDropCost, explainDropCost, type EffortLevel } from '@/shared/effort';
 import { DayPicker } from './DayPicker';
 import styles from './HabitForm.module.css';
 
@@ -36,12 +36,12 @@ const COLOR_OPTIONS = [
 
 interface HabitFormProps {
     habit?: HabitWithSchedule;
-    buckets: BucketWithWater[];
-    allocatedWater: number;
+    buckets: BucketWithDrops[];
+    allocatedDrops: number;
     onClose: () => void;
 }
 
-export function HabitForm({ habit, buckets, allocatedWater, onClose }: HabitFormProps) {
+export function HabitForm({ habit, buckets, allocatedDrops, onClose }: HabitFormProps) {
     const router = useRouter();
     const [title, setTitle] = useState(habit?.title ?? '');
     const [description, setDescription] = useState(habit?.description ?? '');
@@ -62,12 +62,12 @@ export function HabitForm({ habit, buckets, allocatedWater, onClose }: HabitForm
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
 
-    const waterCost = computeWaterCost(effortLevel, selectedDays.length);
+    const dropCost = computeDropCost(effortLevel, selectedDays.length);
 
     // When editing, exclude this habit's current water cost from allocated total
-    const currentHabitWater = habit?.waterCost ?? 0;
-    const adjustedAllocated = allocatedWater - currentHabitWater;
-    const totalWithThis = adjustedAllocated + waterCost;
+    const currentHabitDrops = habit?.dropCost ?? 0;
+    const adjustedAllocated = allocatedDrops - currentHabitDrops;
+    const totalWithThis = adjustedAllocated + dropCost;
     const remaining = RESERVOIR_CAPACITY - totalWithThis;
     const isOvercommitted = totalWithThis > RESERVOIR_CAPACITY;
 
@@ -217,7 +217,7 @@ export function HabitForm({ habit, buckets, allocatedWater, onClose }: HabitForm
                         </div>
 
                         <div className={styles.effortResult}>
-                            {explainWaterCost(effortLevel, selectedDays.length, waterCost)}
+                            {explainDropCost(effortLevel, selectedDays.length, dropCost)}
                         </div>
 
                         <div className={styles.capacitySection}>
@@ -238,7 +238,7 @@ export function HabitForm({ habit, buckets, allocatedWater, onClose }: HabitForm
                             <div className={styles.overcommitWarning}>
                                 <span className={styles.warningTitle}>You might be taking on too much</span>
                                 <span className={styles.warningBody}>
-                                    Your habits add up to {totalWithThis} water out of {RESERVOIR_CAPACITY}.
+                                    Your habits add up to {totalWithThis} drops out of {RESERVOIR_CAPACITY}.
                                     That&apos;s {Math.abs(remaining)} over your daily capacity.
                                     You can still save, but consider whether this is sustainable.
                                 </span>

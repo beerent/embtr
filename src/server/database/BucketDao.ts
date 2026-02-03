@@ -18,7 +18,7 @@ export class BucketDao extends BaseDao {
             include: {
                 habits: {
                     where: { isArchived: false },
-                    select: { id: true, waterCost: true },
+                    select: { id: true, dropCost: true },
                 },
             },
             orderBy: { sortOrder: 'asc' },
@@ -91,7 +91,7 @@ export class BucketDao extends BaseDao {
                 b.name as "bucketName",
                 b.color as "bucketColor",
                 b."iconName" as "bucketIconName",
-                COALESCE(SUM(h."waterCost"), 0)::int as "totalWater"
+                COALESCE(SUM(h."waterCost"), 0)::int as "totalDrops"
             FROM planned_tasks pt
             JOIN planned_days pd ON pd.id = pt."plannedDayId"
             JOIN habits h ON h.id = pt."habitId"
@@ -101,7 +101,7 @@ export class BucketDao extends BaseDao {
               AND pd.date <= ${endDate}
               AND pt.status = 'complete'
             GROUP BY b.id, b.name, b.color, b."iconName"
-            ORDER BY "totalWater" DESC
+            ORDER BY "totalDrops" DESC
         `;
         return results;
     }

@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { getSessionUserId } from '../auth/auth';
 import { BucketDao } from '../database/BucketDao';
 import { HabitDao } from '../database/HabitDao';
-import type { BucketData, BucketWithWater } from '@/shared/types/bucket';
+import type { BucketData, BucketWithDrops } from '@/shared/types/bucket';
 
 const createBucketSchema = z.object({
     name: z.string().min(1, 'Name is required').max(50),
@@ -46,12 +46,12 @@ export async function getMyBuckets(): Promise<{
     };
 }
 
-export async function getMyBucketsWithWater(): Promise<{
+export async function getMyBucketsWithDrops(): Promise<{
     success: boolean;
     error?: string;
-    buckets?: BucketWithWater[];
-    allocatedWater?: number;
-    remainingWater?: number;
+    buckets?: BucketWithDrops[];
+    allocatedDrops?: number;
+    remainingDrops?: number;
 }> {
     const userId = await getSessionUserId();
     if (!userId) return { success: false, error: 'Not authenticated.' };
@@ -59,9 +59,9 @@ export async function getMyBucketsWithWater(): Promise<{
     const dao = new BucketDao();
     const buckets = await dao.getByUserIdWithHabits(userId);
 
-    const result: BucketWithWater[] = buckets.map((b: any) => {
-        const totalWaterCost = b.habits.reduce(
-            (sum: number, h: any) => sum + h.waterCost,
+    const result: BucketWithDrops[] = buckets.map((b: any) => {
+        const totalDropCost = b.habits.reduce(
+            (sum: number, h: any) => sum + h.dropCost,
             0
         );
         return {
@@ -71,18 +71,18 @@ export async function getMyBucketsWithWater(): Promise<{
             iconName: b.iconName,
             sortOrder: b.sortOrder,
             isArchived: b.isArchived,
-            totalWaterCost,
-            completedWater: 0,
+            totalDropCost,
+            completedDrops: 0,
         };
     });
 
-    const allocatedWater = result.reduce((sum, b) => sum + b.totalWaterCost, 0);
+    const allocatedDrops = result.reduce((sum, b) => sum + b.totalDropCost, 0);
 
     return {
         success: true,
         buckets: result,
-        allocatedWater,
-        remainingWater: 100 - allocatedWater,
+        allocatedDrops,
+        remainingDrops: 100 - allocatedDrops,
     };
 }
 

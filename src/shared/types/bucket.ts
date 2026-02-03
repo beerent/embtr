@@ -9,16 +9,16 @@ export interface BucketData {
     isArchived: boolean;
 }
 
-export interface BucketWithWater extends BucketData {
-    totalWaterCost: number;
-    completedWater: number;
+export interface BucketWithDrops extends BucketData {
+    totalDropCost: number;
+    completedDrops: number;
 }
 
 export interface BucketFillData {
     bucketName: string;
     bucketColor: string;
     bucketIconName: string;
-    totalWater: number;
-    completedWater: number;
+    totalDrops: number;
+    completedDrops: number;
     fillPercent: number;
 }

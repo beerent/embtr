@@ -29,7 +29,7 @@ export class HabitDao extends BaseDao {
         quantity?: number;
         unit?: string;
         bucketId?: number | null;
-        waterCost?: number;
+        dropCost?: number;
         effortLevel?: number;
     }) {
         return this.client.habit.create({ data });
@@ -45,7 +45,7 @@ export class HabitDao extends BaseDao {
             quantity?: number;
             unit?: string | null;
             bucketId?: number | null;
-            waterCost?: number;
+            dropCost?: number;
             effortLevel?: number;
         }
     ) {

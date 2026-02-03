@@ -112,7 +112,7 @@ export async function getPlannedDays(
         bucketId: h.bucketId ?? null,
         bucketName: h.bucket?.name ?? null,
         bucketColor: h.bucket?.color ?? null,
-        waterCost: h.waterCost ?? 1,
+        dropCost: h.dropCost ?? 1,
     }]));
 
     const result: PlannedDayWithTasks[] = allPlannedDays.map((d: any) => ({
@@ -135,7 +135,7 @@ export async function getPlannedDays(
                 bucketId: bucketInfo?.bucketId ?? null,
                 bucketName: bucketInfo?.bucketName ?? null,
                 bucketColor: bucketInfo?.bucketColor ?? null,
-                waterCost: bucketInfo?.waterCost ?? 1,
+                dropCost: bucketInfo?.dropCost ?? 1,
             };
         }),
         dayResult: d.dayResult ? { score: d.dayResult.score } : null,

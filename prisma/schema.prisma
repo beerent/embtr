@@ -54,7 +54,7 @@ model Habit {
   quantity    Float     @default(1)
   unit        String?
   bucketId    Int?
-  waterCost   Int       @default(1)
+  dropCost    Int       @default(1) @map("waterCost")
   effortLevel Int       @default(3)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

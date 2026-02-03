@@ -10,7 +10,7 @@ interface HabitBucketInfo {
     bucketName: string | null;
     bucketColor: string | null;
     bucketIconName: string | null;
-    waterCost: number;
+    dropCost: number;
 }
 
 export function mapPost(
@@ -50,7 +50,7 @@ export function mapPost(
                     bucketId: bucketInfo?.bucketId ?? null,
                     bucketName: bucketInfo?.bucketName ?? null,
                     bucketColor: bucketInfo?.bucketColor ?? null,
-                    waterCost: bucketInfo?.waterCost ?? 1,
+                    dropCost: bucketInfo?.dropCost ?? 1,
                 };
             });
 
@@ -64,7 +64,7 @@ export function mapPost(
 
                 const key = String(bucketInfo.bucketId);
                 const existing = fillMap.get(key);
-                const water = bucketInfo.waterCost;
+                const water = bucketInfo.dropCost;
 
                 if (existing) {
                     existing.total += water;
@@ -85,8 +85,8 @@ export function mapPost(
                     bucketName: f.name,
                     bucketColor: f.color,
                     bucketIconName: f.iconName,
-                    totalWater: f.total,
-                    completedWater: f.completed,
+                    totalDrops: f.total,
+                    completedDrops: f.completed,
                     fillPercent: f.total > 0 ? Math.round((f.completed / f.total) * 100) : 0,
                 }));
             }

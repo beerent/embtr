@@ -5,7 +5,7 @@ import { getSessionUserId } from '../auth/auth';
 import { HabitDao } from '../database/HabitDao';
 import { ScheduledHabitDao } from '../database/ScheduledHabitDao';
 import { HabitWithSchedule } from '@/shared/types/habit';
-import { computeWaterCost, type EffortLevel } from '@/shared/effort';
+import { computeDropCost, type EffortLevel } from '@/shared/effort';
 
 const createHabitSchema = z.object({
     title: z.string().min(1, 'Title is required').max(100),
@@ -52,7 +52,7 @@ export async function createHabit(
 
     const effort = (parsed.data.effortLevel ?? 3) as EffortLevel;
     const days = parsed.data.scheduledDays ?? [0, 1, 2, 3, 4, 5, 6];
-    const waterCost = computeWaterCost(effort, days.length);
+    const dropCost = computeDropCost(effort, days.length);
 
     const habitDao = new HabitDao();
     const habit = await habitDao.create({
@@ -64,7 +64,7 @@ export async function createHabit(
         quantity: parsed.data.quantity,
         unit: parsed.data.unit,
         bucketId: parsed.data.bucketId ?? undefined,
-        waterCost,
+        dropCost,
         effortLevel: effort,
     });
 
@@ -84,7 +84,7 @@ export async function createHabit(
             quantity: habit.quantity,
             unit: habit.unit,
             bucketId: habit.bucketId,
-            waterCost: habit.waterCost,
+            dropCost: habit.dropCost,
             effortLevel: habit.effortLevel,
         },
     };
@@ -120,20 +120,20 @@ export async function updateHabit(
 
     const { scheduledDays, ...habitData } = parsed.data;
 
-    // If schedule is changing, update it and recompute waterCost
+    // If schedule is changing, update it and recompute dropCost
     if (scheduledDays) {
         const scheduledHabitDao = new ScheduledHabitDao();
         await scheduledHabitDao.setSchedule(userId, habitId, scheduledDays);
     }
 
-    // Compute waterCost from effortLevel + schedule
+    // Compute dropCost from effortLevel + schedule
     const effort = (habitData.effortLevel ?? habit.effortLevel) as EffortLevel;
     const daysCount = scheduledDays
         ? scheduledDays.length
         : habit.scheduledHabits.filter((s: any) => s.isActive).length;
-    const waterCost = computeWaterCost(effort, daysCount);
+    const dropCost = computeDropCost(effort, daysCount);
 
-    await habitDao.update(habitId, { ...habitData, waterCost, effortLevel: effort });
+    await habitDao.update(habitId, { ...habitData, dropCost, effortLevel: effort });
     return { success: true };
 }
 
@@ -169,10 +169,10 @@ export async function updateSchedule(
     const scheduledHabitDao = new ScheduledHabitDao();
     await scheduledHabitDao.setSchedule(userId, habitId, enabledDays);
 
-    // Recompute waterCost based on new schedule
+    // Recompute dropCost based on new schedule
     const effort = (habit.effortLevel ?? 3) as EffortLevel;
-    const waterCost = computeWaterCost(effort, enabledDays.length);
-    await habitDao.update(habitId, { waterCost });
+    const dropCost = computeDropCost(effort, enabledDays.length);
+    await habitDao.update(habitId, { dropCost });
 
     return { success: true };
 }
@@ -203,7 +203,7 @@ export async function getMyHabits(): Promise<{
             quantity: h.quantity ?? 1,
             unit: h.unit ?? null,
             bucketId: h.bucketId ?? null,
-            waterCost: h.waterCost ?? 1,
+            dropCost: h.dropCost ?? 1,
             effortLevel: h.effortLevel ?? 3,
         })
     );

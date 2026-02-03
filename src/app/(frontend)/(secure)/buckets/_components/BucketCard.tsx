@@ -5,7 +5,7 @@ import {
     Dumbbell, Book, Droplets, Brain, Heart, Apple,
     Bike, Moon, Sun, Music, Coffee,
 } from 'lucide-react';
-import type { BucketWithWater } from '@/shared/types/bucket';
+import type { BucketWithDrops } from '@/shared/types/bucket';
 import { RESERVOIR_CAPACITY } from '@/shared/types/bucket';
 import styles from './BucketCard.module.css';
 
@@ -15,7 +15,7 @@ const BUCKET_ICON_MAP: Record<string, LucideIcon> = {
 };
 
 interface BucketCardProps {
-    bucket: BucketWithWater;
+    bucket: BucketWithDrops;
     habitCount: number;
     index: number;
     onEdit: () => void;
@@ -25,7 +25,7 @@ interface BucketCardProps {
 export function BucketCard({ bucket, habitCount, index, onEdit, onArchive }: BucketCardProps) {
     const IconComp = BUCKET_ICON_MAP[bucket.iconName];
     const fillPercent = RESERVOIR_CAPACITY > 0
-        ? Math.min(100, (bucket.totalWaterCost / RESERVOIR_CAPACITY) * 100)
+        ? Math.min(100, (bucket.totalDropCost / RESERVOIR_CAPACITY) * 100)
         : 0;
 
     return (
@@ -56,7 +56,7 @@ export function BucketCard({ bucket, habitCount, index, onEdit, onArchive }: Buc
             </div>
             <h3 className={styles.cardTitle}>{bucket.name}</h3>
             <p className={styles.meta}>
-                {habitCount} {habitCount === 1 ? 'habit' : 'habits'} &middot; {bucket.totalWaterCost} water
+                {habitCount} {habitCount === 1 ? 'habit' : 'habits'} &middot; {bucket.totalDropCost} {bucket.totalDropCost === 1 ? 'drop' : 'drops'}
             </p>
             <div className={styles.fillBarContainer}>
                 <div

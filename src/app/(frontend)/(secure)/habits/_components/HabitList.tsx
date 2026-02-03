@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { archiveHabit } from '@/server/habits/actions';
 import { HabitWithSchedule } from '@/shared/types/habit';
-import type { BucketWithWater } from '@/shared/types/bucket';
+import type { BucketWithDrops } from '@/shared/types/bucket';
 import { getEffortLabel } from '@/shared/effort';
 import { HabitForm } from './HabitForm';
 import styles from './HabitList.module.css';
@@ -23,11 +23,11 @@ const HABIT_ICON_MAP: Record<string, LucideIcon> = {
 
 interface HabitListProps {
     habits: HabitWithSchedule[];
-    buckets: BucketWithWater[];
-    allocatedWater: number;
+    buckets: BucketWithDrops[];
+    allocatedDrops: number;
 }
 
-export function HabitList({ habits, buckets, allocatedWater }: HabitListProps) {
+export function HabitList({ habits, buckets, allocatedDrops }: HabitListProps) {
     const router = useRouter();
     const [showForm, setShowForm] = useState(false);
     const [editingHabit, setEditingHabit] = useState<HabitWithSchedule | undefined>();
@@ -109,8 +109,8 @@ export function HabitList({ habits, buckets, allocatedWater }: HabitListProps) {
                                     <p className={styles.cardDesc}>{habit.description}</p>
                                 )}
                                 <div className={styles.effortBadge}>
-                                    <span className={styles.waterLabel}>
-                                        {getEffortLabel(habit.effortLevel)} · {habit.waterCost} water
+                                    <span className={styles.dropLabel}>
+                                        {getEffortLabel(habit.effortLevel)} · {habit.dropCost} {habit.dropCost === 1 ? 'drop' : 'drops'}
                                     </span>
                                 </div>
                                 {bucket && (
@@ -140,7 +140,7 @@ export function HabitList({ habits, buckets, allocatedWater }: HabitListProps) {
                 <HabitForm
                     habit={editingHabit}
                     buckets={buckets}
-                    allocatedWater={allocatedWater}
+                    allocatedDrops={allocatedDrops}
                     onClose={closeForm}
                 />
             )}

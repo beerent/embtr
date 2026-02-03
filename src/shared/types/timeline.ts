@@ -25,7 +25,7 @@ export interface TimelineCompletedTask {
     bucketId: number | null;
     bucketName: string | null;
     bucketColor: string | null;
-    waterCost: number;
+    dropCost: number;
 }
 
 export interface TimelinePostData {

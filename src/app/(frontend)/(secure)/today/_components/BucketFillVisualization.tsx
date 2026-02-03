@@ -12,8 +12,8 @@ interface BucketFill {
     bucketId: number | null;
     bucketName: string;
     bucketColor: string;
-    totalWater: number;
-    completedWater: number;
+    totalDrops: number;
+    completedDrops: number;
 }
 
 export function BucketFillVisualization({ tasks }: BucketFillVisualizationProps) {
@@ -25,39 +25,39 @@ export function BucketFillVisualization({ tasks }: BucketFillVisualizationProps)
         const existing = bucketMap.get(key);
 
         if (existing) {
-            existing.totalWater += task.waterCost;
+            existing.totalDrops += task.dropCost;
             if (task.status === 'complete') {
-                existing.completedWater += task.waterCost;
+                existing.completedDrops += task.dropCost;
             }
         } else {
             bucketMap.set(key, {
                 bucketId: key,
                 bucketName: task.bucketName ?? 'Other',
                 bucketColor: task.bucketColor ?? 'var(--text-muted)',
-                totalWater: task.waterCost,
-                completedWater: task.status === 'complete' ? task.waterCost : 0,
+                totalDrops: task.dropCost,
+                completedDrops: task.status === 'complete' ? task.dropCost : 0,
             });
         }
     }
 
-    const fills = Array.from(bucketMap.values()).filter((f) => f.totalWater > 0);
+    const fills = Array.from(bucketMap.values()).filter((f) => f.totalDrops > 0);
 
     if (fills.length === 0) return null;
 
-    const totalUsed = fills.reduce((sum, f) => sum + f.completedWater, 0);
+    const totalUsed = fills.reduce((sum, f) => sum + f.completedDrops, 0);
 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <span className={styles.title}>Water Flow</span>
-                <span className={styles.usage}>{totalUsed}/{RESERVOIR_CAPACITY} water used today</span>
+                <span className={styles.title}>Drop Flow</span>
+                <span className={styles.usage}>{totalUsed}/{RESERVOIR_CAPACITY} drops used today</span>
             </div>
 
             <div className={styles.bars}>
                 {fills.map((fill) => {
                     const maxHeight = 80;
-                    const fillPercent = fill.totalWater > 0
-                        ? (fill.completedWater / fill.totalWater) * 100
+                    const fillPercent = fill.totalDrops > 0
+                        ? (fill.completedDrops / fill.totalDrops) * 100
                         : 0;
                     const fillHeight = (fillPercent / 100) * maxHeight;
 
@@ -80,7 +80,7 @@ export function BucketFillVisualization({ tasks }: BucketFillVisualizationProps)
                             </div>
                             <span className={styles.barLabel}>{fill.bucketName}</span>
                             <span className={styles.barValue}>
-                                {fill.completedWater}/{fill.totalWater}
+                                {fill.completedDrops}/{fill.totalDrops}
                             </span>
                         </div>
                     );

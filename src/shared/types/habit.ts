@@ -9,7 +9,7 @@ export interface HabitWithSchedule {
     quantity: number;
     unit: string | null;
     bucketId: number | null;
-    waterCost: number;
+    dropCost: number;
     effortLevel: number;
 }
 
@@ -39,5 +39,5 @@ export interface PlannedTaskData {
     bucketId: number | null;
     bucketName: string | null;
     bucketColor: string | null;
-    waterCost: number;
+    dropCost: number;
 }

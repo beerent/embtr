@@ -1,24 +1,24 @@
 'use client';
 
-import type { BucketWithWater } from '@/shared/types/bucket';
+import type { BucketWithDrops } from '@/shared/types/bucket';
 import { RESERVOIR_CAPACITY } from '@/shared/types/bucket';
 import styles from './ReservoirMeter.module.css';
 
 interface ReservoirMeterProps {
-    buckets: BucketWithWater[];
-    allocatedWater: number;
-    remainingWater: number;
+    buckets: BucketWithDrops[];
+    allocatedDrops: number;
+    remainingDrops: number;
 }
 
-export function ReservoirMeter({ buckets, allocatedWater, remainingWater }: ReservoirMeterProps) {
+export function ReservoirMeter({ buckets, allocatedDrops, remainingDrops }: ReservoirMeterProps) {
     const barWidth = 100;
     const barHeight = 24;
 
     let xOffset = 0;
     const segments = buckets
-        .filter((b) => b.totalWaterCost > 0)
+        .filter((b) => b.totalDropCost > 0)
         .map((b) => {
-            const width = (b.totalWaterCost / RESERVOIR_CAPACITY) * barWidth;
+            const width = (b.totalDropCost / RESERVOIR_CAPACITY) * barWidth;
             const segment = {
                 key: b.id,
                 x: xOffset,
@@ -30,16 +30,16 @@ export function ReservoirMeter({ buckets, allocatedWater, remainingWater }: Rese
             return segment;
         });
 
-    const isOver = allocatedWater > RESERVOIR_CAPACITY;
+    const isOver = allocatedDrops > RESERVOIR_CAPACITY;
 
     return (
         <div className={styles.container}>
             <div className={styles.label}>
                 <span className={isOver ? styles.allocatedOver : styles.allocated}>
-                    {allocatedWater}/{RESERVOIR_CAPACITY} allocated
+                    {allocatedDrops}/{RESERVOIR_CAPACITY} allocated
                 </span>
                 <span className={isOver ? styles.remainingOver : styles.remaining}>
-                    {isOver ? `${allocatedWater - RESERVOIR_CAPACITY} over` : `${remainingWater} remaining`}
+                    {isOver ? `${allocatedDrops - RESERVOIR_CAPACITY} over` : `${remainingDrops} remaining`}
                 </span>
             </div>
             <svg
@@ -47,7 +47,7 @@ export function ReservoirMeter({ buckets, allocatedWater, remainingWater }: Rese
                 viewBox={`0 0 ${barWidth} ${barHeight}`}
                 preserveAspectRatio="none"
                 role="img"
-                aria-label={`Reservoir: ${allocatedWater} of ${RESERVOIR_CAPACITY} water allocated`}
+                aria-label={`Reservoir: ${allocatedDrops} of ${RESERVOIR_CAPACITY} drops allocated`}
             >
                 <defs>
                     <clipPath id="reservoir-clip">
