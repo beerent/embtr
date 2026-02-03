@@ -10,6 +10,7 @@ import {
 import { archiveHabit } from '@/server/habits/actions';
 import { HabitWithSchedule } from '@/shared/types/habit';
 import type { BucketWithWater } from '@/shared/types/bucket';
+import { getEffortLabel } from '@/shared/effort';
 import { HabitForm } from './HabitForm';
 import styles from './HabitList.module.css';
 
@@ -107,6 +108,11 @@ export function HabitList({ habits, buckets, allocatedWater }: HabitListProps) {
                                 {habit.description && (
                                     <p className={styles.cardDesc}>{habit.description}</p>
                                 )}
+                                <div className={styles.effortBadge}>
+                                    <span className={styles.waterLabel}>
+                                        {getEffortLabel(habit.effortLevel)} · {habit.waterCost} water
+                                    </span>
+                                </div>
                                 {bucket && (
                                     <div className={styles.bucketBadge}>
                                         <span
@@ -114,7 +120,6 @@ export function HabitList({ habits, buckets, allocatedWater }: HabitListProps) {
                                             style={{ backgroundColor: bucket.color }}
                                         />
                                         <span className={styles.bucketName}>{bucket.name}</span>
-                                        <span className={styles.waterLabel}>{habit.waterCost} water</span>
                                     </div>
                                 )}
                                 <p className={styles.schedule}>

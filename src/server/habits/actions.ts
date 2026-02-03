@@ -5,6 +5,7 @@ import { getSessionUserId } from '../auth/auth';
 import { HabitDao } from '../database/HabitDao';
 import { ScheduledHabitDao } from '../database/ScheduledHabitDao';
 import { HabitWithSchedule } from '@/shared/types/habit';
+import { computeWaterCost, type EffortLevel } from '@/shared/effort';
 
 const createHabitSchema = z.object({
     title: z.string().min(1, 'Title is required').max(100),
@@ -14,7 +15,8 @@ const createHabitSchema = z.object({
     quantity: z.number().min(1).max(1000).optional(),
     unit: z.string().max(50).optional(),
     bucketId: z.number().int().positive().nullable().optional(),
-    waterCost: z.number().int().min(1).max(100).optional(),
+    effortLevel: z.number().int().min(1).max(5).optional(),
+    scheduledDays: z.array(z.number().int().min(0).max(6)).optional(),
 });
 
 const updateHabitSchema = z.object({
@@ -25,7 +27,8 @@ const updateHabitSchema = z.object({
     quantity: z.number().min(1).max(1000).optional(),
     unit: z.string().max(50).nullable().optional(),
     bucketId: z.number().int().positive().nullable().optional(),
-    waterCost: z.number().int().min(1).max(100).optional(),
+    effortLevel: z.number().int().min(1).max(5).optional(),
+    scheduledDays: z.array(z.number().int().min(0).max(6)).optional(),
 });
 
 export async function createHabit(
@@ -36,15 +39,20 @@ export async function createHabit(
     quantity?: number,
     unit?: string,
     bucketId?: number | null,
-    waterCost?: number
+    effortLevel?: number,
+    scheduledDays?: number[]
 ): Promise<{ success: boolean; error?: string; habit?: HabitWithSchedule }> {
     const userId = await getSessionUserId();
     if (!userId) return { success: false, error: 'Not authenticated.' };
 
-    const parsed = createHabitSchema.safeParse({ title, description, iconName, iconColor, quantity, unit, bucketId, waterCost });
+    const parsed = createHabitSchema.safeParse({ title, description, iconName, iconColor, quantity, unit, bucketId, effortLevel, scheduledDays });
     if (!parsed.success) {
         return { success: false, error: parsed.error.errors[0]?.message || 'Invalid input.' };
     }
+
+    const effort = (parsed.data.effortLevel ?? 3) as EffortLevel;
+    const days = parsed.data.scheduledDays ?? [0, 1, 2, 3, 4, 5, 6];
+    const waterCost = computeWaterCost(effort, days.length);
 
     const habitDao = new HabitDao();
     const habit = await habitDao.create({
@@ -56,12 +64,12 @@ export async function createHabit(
         quantity: parsed.data.quantity,
         unit: parsed.data.unit,
         bucketId: parsed.data.bucketId ?? undefined,
-        waterCost: parsed.data.waterCost,
+        waterCost,
+        effortLevel: effort,
     });
 
-    // Default schedule: all 7 days active
     const scheduledHabitDao = new ScheduledHabitDao();
-    await scheduledHabitDao.setSchedule(userId, habit.id, [0, 1, 2, 3, 4, 5, 6]);
+    await scheduledHabitDao.setSchedule(userId, habit.id, days);
 
     return {
         success: true,
@@ -72,18 +80,29 @@ export async function createHabit(
             iconName: habit.iconName,
             iconColor: habit.iconColor,
             isArchived: habit.isArchived,
-            scheduledDays: [0, 1, 2, 3, 4, 5, 6],
+            scheduledDays: days,
             quantity: habit.quantity,
             unit: habit.unit,
             bucketId: habit.bucketId,
             waterCost: habit.waterCost,
+            effortLevel: habit.effortLevel,
         },
     };
 }
 
 export async function updateHabit(
     habitId: number,
-    data: { title?: string; description?: string; iconName?: string; iconColor?: string; quantity?: number; unit?: string | null; bucketId?: number | null; waterCost?: number }
+    data: {
+        title?: string;
+        description?: string;
+        iconName?: string;
+        iconColor?: string;
+        quantity?: number;
+        unit?: string | null;
+        bucketId?: number | null;
+        effortLevel?: number;
+        scheduledDays?: number[];
+    }
 ): Promise<{ success: boolean; error?: string }> {
     const userId = await getSessionUserId();
     if (!userId) return { success: false, error: 'Not authenticated.' };
@@ -99,7 +118,22 @@ export async function updateHabit(
         return { success: false, error: 'Habit not found.' };
     }
 
-    await habitDao.update(habitId, parsed.data);
+    const { scheduledDays, ...habitData } = parsed.data;
+
+    // If schedule is changing, update it and recompute waterCost
+    if (scheduledDays) {
+        const scheduledHabitDao = new ScheduledHabitDao();
+        await scheduledHabitDao.setSchedule(userId, habitId, scheduledDays);
+    }
+
+    // Compute waterCost from effortLevel + schedule
+    const effort = (habitData.effortLevel ?? habit.effortLevel) as EffortLevel;
+    const daysCount = scheduledDays
+        ? scheduledDays.length
+        : habit.scheduledHabits.filter((s: any) => s.isActive).length;
+    const waterCost = computeWaterCost(effort, daysCount);
+
+    await habitDao.update(habitId, { ...habitData, waterCost, effortLevel: effort });
     return { success: true };
 }
 
@@ -134,6 +168,12 @@ export async function updateSchedule(
 
     const scheduledHabitDao = new ScheduledHabitDao();
     await scheduledHabitDao.setSchedule(userId, habitId, enabledDays);
+
+    // Recompute waterCost based on new schedule
+    const effort = (habit.effortLevel ?? 3) as EffortLevel;
+    const waterCost = computeWaterCost(effort, enabledDays.length);
+    await habitDao.update(habitId, { waterCost });
+
     return { success: true };
 }
 
@@ -164,6 +204,7 @@ export async function getMyHabits(): Promise<{
             unit: h.unit ?? null,
             bucketId: h.bucketId ?? null,
             waterCost: h.waterCost ?? 1,
+            effortLevel: h.effortLevel ?? 3,
         })
     );
 

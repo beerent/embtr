@@ -6,10 +6,11 @@ import {
     Dumbbell, Book, Droplets, Brain, Heart, Apple,
     Bike, Moon, Sun, Music, Pencil, Coffee, LucideIcon, X,
 } from 'lucide-react';
-import { createHabit, updateHabit, updateSchedule } from '@/server/habits/actions';
+import { createHabit, updateHabit } from '@/server/habits/actions';
 import { HabitWithSchedule } from '@/shared/types/habit';
 import type { BucketWithWater } from '@/shared/types/bucket';
 import { RESERVOIR_CAPACITY } from '@/shared/types/bucket';
+import { EFFORT_LEVELS, computeWaterCost, explainWaterCost, type EffortLevel } from '@/shared/effort';
 import { DayPicker } from './DayPicker';
 import styles from './HabitForm.module.css';
 
@@ -55,14 +56,20 @@ export function HabitForm({ habit, buckets, allocatedWater, onClose }: HabitForm
     const [quantity, setQuantity] = useState<number>(habit?.quantity ?? 1);
     const [unit, setUnit] = useState<string>(habit?.unit ?? '');
     const [bucketId, setBucketId] = useState<number | null>(habit?.bucketId ?? null);
-    const [waterCost, setWaterCost] = useState<number>(habit?.waterCost ?? 1);
+    const [effortLevel, setEffortLevel] = useState<EffortLevel>(
+        (habit?.effortLevel ?? 3) as EffortLevel
+    );
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
+
+    const waterCost = computeWaterCost(effortLevel, selectedDays.length);
 
     // When editing, exclude this habit's current water cost from allocated total
     const currentHabitWater = habit?.waterCost ?? 0;
     const adjustedAllocated = allocatedWater - currentHabitWater;
-    const remaining = RESERVOIR_CAPACITY - adjustedAllocated - waterCost;
+    const totalWithThis = adjustedAllocated + waterCost;
+    const remaining = RESERVOIR_CAPACITY - totalWithThis;
+    const isOvercommitted = totalWithThis > RESERVOIR_CAPACITY;
 
     const isEdit = !!habit;
 
@@ -88,16 +95,11 @@ export function HabitForm({ habit, buckets, allocatedWater, onClose }: HabitForm
                 quantity: effectiveQuantity,
                 unit: effectiveUnit,
                 bucketId,
-                waterCost,
+                effortLevel,
+                scheduledDays: selectedDays,
             });
             if (!res.success) {
                 setError(res.error || 'Failed to update habit.');
-                setSaving(false);
-                return;
-            }
-            const schedRes = await updateSchedule(habit.id, selectedDays);
-            if (!schedRes.success) {
-                setError(schedRes.error || 'Failed to update schedule.');
                 setSaving(false);
                 return;
             }
@@ -110,21 +112,21 @@ export function HabitForm({ habit, buckets, allocatedWater, onClose }: HabitForm
                 effectiveQuantity > 1 ? effectiveQuantity : undefined,
                 effectiveUnit || undefined,
                 bucketId,
-                waterCost
+                effortLevel,
+                selectedDays
             );
             if (!res.success) {
                 setError(res.error || 'Failed to create habit.');
                 setSaving(false);
                 return;
             }
-            if (res.habit) {
-                await updateSchedule(res.habit.id, selectedDays);
-            }
         }
 
         router.refresh();
         onClose();
     };
+
+    const capacityPercent = Math.min(100, (totalWithThis / RESERVOIR_CAPACITY) * 100);
 
     return (
         <div className={styles.overlay} onClick={onClose}>
@@ -199,6 +201,52 @@ export function HabitForm({ habit, buckets, allocatedWater, onClose }: HabitForm
                     </div>
 
                     <div className={styles.fieldGroup}>
+                        <span className={styles.fieldLabel}>How much does this take out of your day?</span>
+                        <div className={styles.effortSelector}>
+                            {EFFORT_LEVELS.map((e) => (
+                                <button
+                                    key={e.level}
+                                    type="button"
+                                    className={`${styles.effortOption} ${effortLevel === e.level ? styles.effortActive : ''}`}
+                                    onClick={() => setEffortLevel(e.level)}
+                                >
+                                    <span className={styles.effortLabel}>{e.label}</span>
+                                    <span className={styles.effortDesc}>{e.description}</span>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className={styles.effortResult}>
+                            {explainWaterCost(effortLevel, selectedDays.length, waterCost)}
+                        </div>
+
+                        <div className={styles.capacitySection}>
+                            <div className={styles.capacityHeader}>
+                                <span className={styles.capacityText}>
+                                    {totalWithThis} / {RESERVOIR_CAPACITY} daily capacity used
+                                </span>
+                            </div>
+                            <div className={styles.capacityBar}>
+                                <div
+                                    className={`${styles.capacityFill} ${isOvercommitted ? styles.capacityOver : ''}`}
+                                    style={{ width: `${capacityPercent}%` }}
+                                />
+                            </div>
+                        </div>
+
+                        {isOvercommitted && (
+                            <div className={styles.overcommitWarning}>
+                                <span className={styles.warningTitle}>You might be taking on too much</span>
+                                <span className={styles.warningBody}>
+                                    Your habits add up to {totalWithThis} water out of {RESERVOIR_CAPACITY}.
+                                    That&apos;s {Math.abs(remaining)} over your daily capacity.
+                                    You can still save, but consider whether this is sustainable.
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className={styles.fieldGroup}>
                         <label className={styles.toggleRow}>
                             <span className={styles.fieldLabel}>Track quantity</span>
                             <button
@@ -263,27 +311,6 @@ export function HabitForm({ habit, buckets, allocatedWater, onClose }: HabitForm
                             ))}
                         </div>
                     </div>
-
-                    {bucketId !== null && (
-                        <div className={styles.fieldGroup}>
-                            <span className={styles.fieldLabel}>Water cost</span>
-                            <div className={styles.waterCostRow}>
-                                <input
-                                    className={styles.quantityInput}
-                                    type="number"
-                                    min={1}
-                                    max={100}
-                                    value={waterCost}
-                                    onChange={(e) => setWaterCost(Math.max(1, Math.min(100, parseInt(e.target.value) || 1)))}
-                                />
-                                <span className={styles.waterHelper}>
-                                    {remaining >= 0
-                                        ? `${remaining} of ${RESERVOIR_CAPACITY} remaining`
-                                        : `Over by ${Math.abs(remaining)}`}
-                                </span>
-                            </div>
-                        </div>
-                    )}
 
                     <div className={styles.actions}>
                         <button type="button" className={styles.cancelBtn} onClick={onClose}>

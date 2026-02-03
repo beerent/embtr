@@ -55,6 +55,7 @@ model Habit {
   unit        String?
   bucketId    Int?
   waterCost   Int       @default(1)
+  effortLevel Int       @default(3)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

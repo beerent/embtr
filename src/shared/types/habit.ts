@@ -10,6 +10,7 @@ export interface HabitWithSchedule {
     unit: string | null;
     bucketId: number | null;
     waterCost: number;
+    effortLevel: number;
 }
 
 export interface DayResultData {

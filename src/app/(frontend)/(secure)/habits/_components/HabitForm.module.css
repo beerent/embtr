@@ -343,13 +343,115 @@
     border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.waterCostRow {
+.effortSelector {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.effortOption {
     display: flex;
     align-items: center;
     gap: var(--space-base);
+    padding: var(--space-md) var(--space-base);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-input);
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: all var(--transition-fast);
 }
 
-.waterHelper {
+.effortOption:hover {
+    border-color: var(--color-primary);
+    background: var(--glass-hover);
+}
+
+.effortActive {
+    border-color: var(--color-primary);
+    background: rgba(241, 78, 107, 0.1);
+}
+
+.effortLabel {
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    min-width: 72px;
+    flex-shrink: 0;
+}
+
+.effortDesc {
     font-size: 0.75rem;
     color: var(--text-muted);
+}
+
+.effortActive .effortLabel {
+    color: var(--color-primary);
+}
+
+.effortResult {
+    font-size: 0.8125rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    padding: var(--space-sm) var(--space-base);
+    background: var(--glass-hover);
+    border-radius: var(--radius-input);
+}
+
+.capacitySection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.capacityHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.capacityText {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.capacityBar {
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.capacityFill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 3px;
+    transition: width var(--transition-smooth);
+}
+
+.capacityOver {
+    background: var(--color-error, #ef4444);
+}
+
+.overcommitWarning {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-base);
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--radius-input);
+}
+
+.warningTitle {
+    font-size: 0.8125rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-error, #ef4444);
+}
+
+.warningBody {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
 }

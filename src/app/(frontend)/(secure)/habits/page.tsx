@@ -11,7 +11,7 @@ export default async function HabitsPage() {
 
     const habits = habitResult.habits ?? [];
     const buckets = bucketResult.buckets ?? [];
-    const allocatedWater = bucketResult.allocatedWater ?? 0;
+    const allocatedWater = habits.reduce((sum, h) => sum + h.waterCost, 0);
 
     return (
         <div>
