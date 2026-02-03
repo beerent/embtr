@@ -25,6 +25,7 @@ model User {
   updatedAt    DateTime  @updatedAt
 
   habits                  Habit[]
+  buckets                 Bucket[]
   scheduledHabits         ScheduledHabit[]
   plannedDays             PlannedDay[]
   habitStreaks            HabitStreak[]
@@ -52,15 +53,36 @@ model Habit {
   isArchived  Boolean   @default(false)
   quantity    Float     @default(1)
   unit        String?
+  bucketId    Int?
+  waterCost   Int       @default(1)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   user                 User                  @relation(fields: [userId], references: [id])
+  bucket               Bucket?               @relation(fields: [bucketId], references: [id])
   scheduledHabits      ScheduledHabit[]
   habitStreaks         HabitStreak[]
   challengeParticipant ChallengeParticipant?
 
   @@map("habits")
+}
+
+model Bucket {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  name       String
+  color      String    @default("#4E73DF")
+  iconName   String    @default("Droplets")
+  sortOrder  Int       @default(0)
+  isArchived Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  habits Habit[]
+
+  @@index([userId, isArchived])
+  @@map("buckets")
 }
 
 model ScheduledHabit {

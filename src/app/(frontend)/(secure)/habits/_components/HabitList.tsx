@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { archiveHabit } from '@/server/habits/actions';
 import { HabitWithSchedule } from '@/shared/types/habit';
+import type { BucketWithWater } from '@/shared/types/bucket';
 import { HabitForm } from './HabitForm';
 import styles from './HabitList.module.css';
 
@@ -21,9 +22,11 @@ const HABIT_ICON_MAP: Record<string, LucideIcon> = {
 
 interface HabitListProps {
     habits: HabitWithSchedule[];
+    buckets: BucketWithWater[];
+    allocatedWater: number;
 }
 
-export function HabitList({ habits }: HabitListProps) {
+export function HabitList({ habits, buckets, allocatedWater }: HabitListProps) {
     const router = useRouter();
     const [showForm, setShowForm] = useState(false);
     const [editingHabit, setEditingHabit] = useState<HabitWithSchedule | undefined>();
@@ -54,6 +57,8 @@ export function HabitList({ habits }: HabitListProps) {
         return days.map((d) => DAY_NAMES[d]).join(', ');
     };
 
+    const bucketMap = new Map(buckets.map((b) => [b.id, b]));
+
     return (
         <>
             <div className={styles.toolbar}>
@@ -71,6 +76,7 @@ export function HabitList({ habits }: HabitListProps) {
                 <div className={styles.grid}>
                     {habits.map((habit, index) => {
                         const IconComp = HABIT_ICON_MAP[habit.iconName];
+                        const bucket = habit.bucketId ? bucketMap.get(habit.bucketId) : null;
                         return (
                             <div key={habit.id} className={styles.card} style={{ '--delay': `${index * 60}ms` } as React.CSSProperties}>
                                 <div className={styles.cardHeader}>
@@ -101,6 +107,16 @@ export function HabitList({ habits }: HabitListProps) {
                                 {habit.description && (
                                     <p className={styles.cardDesc}>{habit.description}</p>
                                 )}
+                                {bucket && (
+                                    <div className={styles.bucketBadge}>
+                                        <span
+                                            className={styles.bucketDot}
+                                            style={{ backgroundColor: bucket.color }}
+                                        />
+                                        <span className={styles.bucketName}>{bucket.name}</span>
+                                        <span className={styles.waterLabel}>{habit.waterCost} water</span>
+                                    </div>
+                                )}
                                 <p className={styles.schedule}>
                                     {getScheduleSummary(habit.scheduledDays)}
                                 </p>
@@ -115,7 +131,14 @@ export function HabitList({ habits }: HabitListProps) {
                 </div>
             )}
 
-            {showForm && <HabitForm habit={editingHabit} onClose={closeForm} />}
+            {showForm && (
+                <HabitForm
+                    habit={editingHabit}
+                    buckets={buckets}
+                    allocatedWater={allocatedWater}
+                    onClose={closeForm}
+                />
+            )}
         </>
     );
 }

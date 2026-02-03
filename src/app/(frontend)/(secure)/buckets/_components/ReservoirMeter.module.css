@@ -1,0 +1,73 @@
+.container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    animation: fadeInUp 400ms ease both;
+}
+
+.label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.allocated {
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.remaining {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+.allocatedOver {
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-error);
+}
+
+.remainingOver {
+    font-size: 0.8125rem;
+    color: var(--color-error);
+}
+
+.bar {
+    width: 100%;
+    height: 24px;
+    border-radius: 4px;
+    overflow: visible;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-base);
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.legendDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.legendText {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}

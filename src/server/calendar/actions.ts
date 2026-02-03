@@ -106,25 +106,38 @@ export async function getPlannedDays(
         a.date.localeCompare(b.date)
     );
 
-    // Build lookup for habit icon colors
+    // Build lookup for habit icon colors and bucket info
     const habitColorMap = new Map(habits.map((h: any) => [h.id, h.iconColor]));
+    const habitBucketMap = new Map(habits.map((h: any) => [h.id, {
+        bucketId: h.bucketId ?? null,
+        bucketName: h.bucket?.name ?? null,
+        bucketColor: h.bucket?.color ?? null,
+        waterCost: h.waterCost ?? 1,
+    }]));
 
     const result: PlannedDayWithTasks[] = allPlannedDays.map((d: any) => ({
         id: d.id,
         date: d.date,
         status: d.status,
-        plannedTasks: d.plannedTasks.map((t: any) => ({
-            id: t.id,
-            title: t.title,
-            description: t.description,
-            status: t.status,
-            habitId: t.habitId,
-            completedAt: t.completedAt ? t.completedAt.toISOString() : null,
-            iconColor: t.habitId ? habitColorMap.get(t.habitId) ?? undefined : undefined,
-            quantity: t.quantity ?? 1,
-            completedQuantity: t.completedQuantity ?? 0,
-            unit: t.unit ?? null,
-        })),
+        plannedTasks: d.plannedTasks.map((t: any) => {
+            const bucketInfo = t.habitId ? habitBucketMap.get(t.habitId) : null;
+            return {
+                id: t.id,
+                title: t.title,
+                description: t.description,
+                status: t.status,
+                habitId: t.habitId,
+                completedAt: t.completedAt ? t.completedAt.toISOString() : null,
+                iconColor: t.habitId ? habitColorMap.get(t.habitId) ?? undefined : undefined,
+                quantity: t.quantity ?? 1,
+                completedQuantity: t.completedQuantity ?? 0,
+                unit: t.unit ?? null,
+                bucketId: bucketInfo?.bucketId ?? null,
+                bucketName: bucketInfo?.bucketName ?? null,
+                bucketColor: bucketInfo?.bucketColor ?? null,
+                waterCost: bucketInfo?.waterCost ?? 1,
+            };
+        }),
         dayResult: d.dayResult ? { score: d.dayResult.score } : null,
     }));
 

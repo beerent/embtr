@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { PlannedDayWithTasks } from '@/shared/types/habit';
 import { toggleTaskStatus, setTaskCompletedQuantity } from '@/server/calendar/actions';
 import { ShareDayButton } from '../../timeline/_components/ShareDayButton';
+import { BucketFillVisualization } from './BucketFillVisualization';
 import { useConfetti } from './useConfetti';
 import styles from './TodayView.module.css';
 
@@ -83,6 +84,10 @@ export function TodayView({ plannedDay }: TodayViewProps) {
                 </p>
                 <p className={styles.quoteAuthor}>— Will Durant</p>
             </div>
+
+            {tasks.some((t) => t.bucketId !== null) && (
+                <BucketFillVisualization tasks={tasks} />
+            )}
 
             <div className={styles.section}>
                 <div className={styles.sectionTitle}>My Tasks</div>

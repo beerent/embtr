@@ -1,4 +1,4 @@
-export type IconName = 'sun' | 'home' | 'list-checks' | 'calendar' | 'globe' | 'trophy' | 'target' | 'users' | 'user' | 'settings' | 'bug';
+export type IconName = 'sun' | 'home' | 'list-checks' | 'calendar' | 'globe' | 'trophy' | 'target' | 'users' | 'user' | 'settings' | 'bug' | 'droplets';
 
 export interface MenuItem {
     path: string;
@@ -27,6 +27,12 @@ const ALL_SECTIONS: MenuSection[] = [
                 path: '/habits',
                 title: 'Habits',
                 icon: 'list-checks',
+                active: false,
+            },
+            {
+                path: '/buckets',
+                title: 'Buckets',
+                icon: 'droplets',
                 active: false,
             },
             {

@@ -81,3 +81,55 @@
     font-style: italic;
     padding-left: 24px;
 }
+
+.bucketSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--glass-border);
+    margin-top: var(--space-sm);
+}
+
+.bucketRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.75rem;
+}
+
+.bucketDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.bucketName {
+    color: var(--text-secondary);
+    min-width: 48px;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bucketBar {
+    flex: 1;
+    height: 4px;
+    background: var(--glass-border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.bucketFill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 400ms ease;
+}
+
+.bucketPercent {
+    color: var(--text-muted);
+    min-width: 28px;
+    text-align: right;
+}

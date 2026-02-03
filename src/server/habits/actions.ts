@@ -13,6 +13,8 @@ const createHabitSchema = z.object({
     iconColor: z.string().optional(),
     quantity: z.number().min(1).max(1000).optional(),
     unit: z.string().max(50).optional(),
+    bucketId: z.number().int().positive().nullable().optional(),
+    waterCost: z.number().int().min(1).max(100).optional(),
 });
 
 const updateHabitSchema = z.object({
@@ -22,6 +24,8 @@ const updateHabitSchema = z.object({
     iconColor: z.string().optional(),
     quantity: z.number().min(1).max(1000).optional(),
     unit: z.string().max(50).nullable().optional(),
+    bucketId: z.number().int().positive().nullable().optional(),
+    waterCost: z.number().int().min(1).max(100).optional(),
 });
 
 export async function createHabit(
@@ -30,12 +34,14 @@ export async function createHabit(
     iconName?: string,
     iconColor?: string,
     quantity?: number,
-    unit?: string
+    unit?: string,
+    bucketId?: number | null,
+    waterCost?: number
 ): Promise<{ success: boolean; error?: string; habit?: HabitWithSchedule }> {
     const userId = await getSessionUserId();
     if (!userId) return { success: false, error: 'Not authenticated.' };
 
-    const parsed = createHabitSchema.safeParse({ title, description, iconName, iconColor, quantity, unit });
+    const parsed = createHabitSchema.safeParse({ title, description, iconName, iconColor, quantity, unit, bucketId, waterCost });
     if (!parsed.success) {
         return { success: false, error: parsed.error.errors[0]?.message || 'Invalid input.' };
     }
@@ -49,6 +55,8 @@ export async function createHabit(
         iconColor: parsed.data.iconColor,
         quantity: parsed.data.quantity,
         unit: parsed.data.unit,
+        bucketId: parsed.data.bucketId ?? undefined,
+        waterCost: parsed.data.waterCost,
     });
 
     // Default schedule: all 7 days active
@@ -67,13 +75,15 @@ export async function createHabit(
             scheduledDays: [0, 1, 2, 3, 4, 5, 6],
             quantity: habit.quantity,
             unit: habit.unit,
+            bucketId: habit.bucketId,
+            waterCost: habit.waterCost,
         },
     };
 }
 
 export async function updateHabit(
     habitId: number,
-    data: { title?: string; description?: string; iconName?: string; iconColor?: string; quantity?: number; unit?: string | null }
+    data: { title?: string; description?: string; iconName?: string; iconColor?: string; quantity?: number; unit?: string | null; bucketId?: number | null; waterCost?: number }
 ): Promise<{ success: boolean; error?: string }> {
     const userId = await getSessionUserId();
     if (!userId) return { success: false, error: 'Not authenticated.' };
@@ -152,6 +162,8 @@ export async function getMyHabits(): Promise<{
                 .sort((a: number, b: number) => a - b),
             quantity: h.quantity ?? 1,
             unit: h.unit ?? null,
+            bucketId: h.bucketId ?? null,
+            waterCost: h.waterCost ?? 1,
         })
     );
 

@@ -14,6 +14,7 @@ import { mapPost } from './mapPost';
 import { refreshSubscriberStatus } from '../twitch/TwitchSubscriberService';
 import { notifyPostLiked } from '../notifications/notifyPostLiked';
 import { notifyPostCommented } from '../notifications/notifyPostCommented';
+import { prisma } from '../database/prisma/prisma';
 
 const TARGET_TYPE = 'timeline_post';
 
@@ -65,8 +66,35 @@ export async function getTimelineFeed(
         commentCountMap.set(row.targetId, row._count.id);
     }
 
+    // Batch query habit→bucket data for DAY_RESULT posts
+    const habitIds = new Set<number>();
+    for (const p of posts) {
+        if (p.type === 'DAY_RESULT' && p.plannedDay?.plannedTasks) {
+            for (const t of p.plannedDay.plannedTasks) {
+                if (t.habitId) habitIds.add(t.habitId);
+            }
+        }
+    }
+
+    let habitBucketMap = new Map<number, { bucketId: number | null; bucketName: string | null; bucketColor: string | null; bucketIconName: string | null; waterCost: number }>();
+    if (habitIds.size > 0) {
+        const habits = await prisma.habit.findMany({
+            where: { id: { in: Array.from(habitIds) } },
+            include: { bucket: true },
+        });
+        for (const h of habits) {
+            habitBucketMap.set(h.id, {
+                bucketId: h.bucketId,
+                bucketName: (h as any).bucket?.name ?? null,
+                bucketColor: (h as any).bucket?.color ?? null,
+                bucketIconName: (h as any).bucket?.iconName ?? null,
+                waterCost: h.waterCost,
+            });
+        }
+    }
+
     const mapped: TimelinePostData[] = posts.map((p: any) =>
-        mapPost(p, likeCounts, commentCountMap, likedSet, userId)
+        mapPost(p, likeCounts, commentCountMap, likedSet, userId, habitBucketMap)
     );
 
     const nextCursor = hasMore ? posts[posts.length - 1].createdAt.toISOString() : null;

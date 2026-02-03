@@ -1,3 +1,5 @@
+import type { BucketFillData } from './bucket';
+
 export enum TimelinePostType {
     USER_POST = 'USER_POST',
     DAY_RESULT = 'DAY_RESULT',
@@ -20,6 +22,10 @@ export interface TimelineCompletedTask {
     completedQuantity: number;
     quantity: number;
     unit: string | null;
+    bucketId: number | null;
+    bucketName: string | null;
+    bucketColor: string | null;
+    waterCost: number;
 }
 
 export interface TimelinePostData {
@@ -47,6 +53,8 @@ export interface TimelinePostData {
     challengeEndDate: string | null;
     challengeRequiredDaysPerWeek: number | null;
     challengeParticipantCount: number | null;
+    // Bucket fill data for DAY_RESULT posts
+    bucketFillLevels: BucketFillData[] | null;
 }
 
 export interface TimelineCommentData {

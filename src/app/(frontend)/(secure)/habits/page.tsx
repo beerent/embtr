@@ -1,15 +1,22 @@
 import { getMyHabits } from '@/server/habits/actions';
+import { getMyBucketsWithWater } from '@/server/buckets/actions';
 import { PageHeader } from '../_components/ui/PageHeader';
 import { HabitList } from './_components/HabitList';
 
 export default async function HabitsPage() {
-    const result = await getMyHabits();
-    const habits = result.habits ?? [];
+    const [habitResult, bucketResult] = await Promise.all([
+        getMyHabits(),
+        getMyBucketsWithWater(),
+    ]);
+
+    const habits = habitResult.habits ?? [];
+    const buckets = bucketResult.buckets ?? [];
+    const allocatedWater = bucketResult.allocatedWater ?? 0;
 
     return (
         <div>
             <PageHeader>Habits</PageHeader>
-            <HabitList habits={habits} />
+            <HabitList habits={habits} buckets={buckets} allocatedWater={allocatedWater} />
         </div>
     );
 }

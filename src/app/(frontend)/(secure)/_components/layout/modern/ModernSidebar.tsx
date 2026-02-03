@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useEffect } from 'react';
-import { Sun, Home, ListChecks, Calendar, Globe, Trophy, Target, Users, User, Settings, Bug, LucideIcon } from 'lucide-react';
+import { Sun, Home, ListChecks, Calendar, Globe, Trophy, Target, Users, User, Settings, Bug, Droplets, LucideIcon } from 'lucide-react';
 
 import { IconName, MenuSection } from '../SideMenu';
 import styles from './ModernSidebar.module.css';
@@ -20,6 +20,7 @@ const ICON_MAP: Record<IconName, LucideIcon> = {
     user: User,
     settings: Settings,
     bug: Bug,
+    droplets: Droplets,
 };
 
 interface ModernSidebarProps {

@@ -8,6 +8,8 @@ export interface HabitWithSchedule {
     scheduledDays: number[]; // [0,1,2,3,4,5,6] derived from ScheduledHabit rows
     quantity: number;
     unit: string | null;
+    bucketId: number | null;
+    waterCost: number;
 }
 
 export interface DayResultData {
@@ -33,4 +35,8 @@ export interface PlannedTaskData {
     quantity: number;
     completedQuantity: number;
     unit: string | null;
+    bucketId: number | null;
+    bucketName: string | null;
+    bucketColor: string | null;
+    waterCost: number;
 }

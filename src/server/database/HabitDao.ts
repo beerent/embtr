@@ -8,7 +8,7 @@ export class HabitDao extends BaseDao {
     async getByUserId(userId: number) {
         return this.client.habit.findMany({
             where: { userId, isArchived: false },
-            include: { scheduledHabits: true },
+            include: { scheduledHabits: true, bucket: true },
             orderBy: { createdAt: 'asc' },
         });
     }
@@ -28,6 +28,8 @@ export class HabitDao extends BaseDao {
         iconColor?: string;
         quantity?: number;
         unit?: string;
+        bucketId?: number | null;
+        waterCost?: number;
     }) {
         return this.client.habit.create({ data });
     }
@@ -41,6 +43,8 @@ export class HabitDao extends BaseDao {
             iconColor?: string;
             quantity?: number;
             unit?: string | null;
+            bucketId?: number | null;
+            waterCost?: number;
         }
     ) {
         return this.client.habit.update({
@@ -53,6 +57,13 @@ export class HabitDao extends BaseDao {
         return this.client.habit.update({
             where: { id },
             data: { isArchived: true },
+        });
+    }
+
+    async clearBucket(bucketId: number) {
+        return this.client.habit.updateMany({
+            where: { bucketId },
+            data: { bucketId: null },
         });
     }
 }

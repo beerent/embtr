@@ -1,0 +1,44 @@
+.toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--space-lg);
+}
+
+.addBtn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--gradient-brand);
+    border: none;
+    border-radius: var(--radius-button);
+    padding: var(--space-md) var(--space-lg);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    box-shadow: var(--shadow-primary);
+}
+
+.addBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-brand);
+}
+
+.empty {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-2xl);
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-lg);
+}

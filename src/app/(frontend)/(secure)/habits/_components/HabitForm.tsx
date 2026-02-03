@@ -8,6 +8,8 @@ import {
 } from 'lucide-react';
 import { createHabit, updateHabit, updateSchedule } from '@/server/habits/actions';
 import { HabitWithSchedule } from '@/shared/types/habit';
+import type { BucketWithWater } from '@/shared/types/bucket';
+import { RESERVOIR_CAPACITY } from '@/shared/types/bucket';
 import { DayPicker } from './DayPicker';
 import styles from './HabitForm.module.css';
 
@@ -33,10 +35,12 @@ const COLOR_OPTIONS = [
 
 interface HabitFormProps {
     habit?: HabitWithSchedule;
+    buckets: BucketWithWater[];
+    allocatedWater: number;
     onClose: () => void;
 }
 
-export function HabitForm({ habit, onClose }: HabitFormProps) {
+export function HabitForm({ habit, buckets, allocatedWater, onClose }: HabitFormProps) {
     const router = useRouter();
     const [title, setTitle] = useState(habit?.title ?? '');
     const [description, setDescription] = useState(habit?.description ?? '');
@@ -50,8 +54,15 @@ export function HabitForm({ habit, onClose }: HabitFormProps) {
     );
     const [quantity, setQuantity] = useState<number>(habit?.quantity ?? 1);
     const [unit, setUnit] = useState<string>(habit?.unit ?? '');
+    const [bucketId, setBucketId] = useState<number | null>(habit?.bucketId ?? null);
+    const [waterCost, setWaterCost] = useState<number>(habit?.waterCost ?? 1);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
+
+    // When editing, exclude this habit's current water cost from allocated total
+    const currentHabitWater = habit?.waterCost ?? 0;
+    const adjustedAllocated = allocatedWater - currentHabitWater;
+    const remaining = RESERVOIR_CAPACITY - adjustedAllocated - waterCost;
 
     const isEdit = !!habit;
 
@@ -76,6 +87,8 @@ export function HabitForm({ habit, onClose }: HabitFormProps) {
                 iconColor,
                 quantity: effectiveQuantity,
                 unit: effectiveUnit,
+                bucketId,
+                waterCost,
             });
             if (!res.success) {
                 setError(res.error || 'Failed to update habit.');
@@ -95,7 +108,9 @@ export function HabitForm({ habit, onClose }: HabitFormProps) {
                 iconName,
                 iconColor,
                 effectiveQuantity > 1 ? effectiveQuantity : undefined,
-                effectiveUnit || undefined
+                effectiveUnit || undefined,
+                bucketId,
+                waterCost
             );
             if (!res.success) {
                 setError(res.error || 'Failed to create habit.');
@@ -221,6 +236,54 @@ export function HabitForm({ habit, onClose }: HabitFormProps) {
                             </div>
                         )}
                     </div>
+
+                    <div className={styles.fieldGroup}>
+                        <span className={styles.fieldLabel}>Bucket</span>
+                        <div className={styles.bucketSelector}>
+                            <button
+                                type="button"
+                                className={`${styles.bucketOption} ${bucketId === null ? styles.bucketActive : ''}`}
+                                onClick={() => setBucketId(null)}
+                            >
+                                No bucket
+                            </button>
+                            {buckets.map((b) => (
+                                <button
+                                    key={b.id}
+                                    type="button"
+                                    className={`${styles.bucketOption} ${bucketId === b.id ? styles.bucketActive : ''}`}
+                                    onClick={() => setBucketId(b.id)}
+                                >
+                                    <span
+                                        className={styles.bucketOptionDot}
+                                        style={{ backgroundColor: b.color }}
+                                    />
+                                    {b.name}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {bucketId !== null && (
+                        <div className={styles.fieldGroup}>
+                            <span className={styles.fieldLabel}>Water cost</span>
+                            <div className={styles.waterCostRow}>
+                                <input
+                                    className={styles.quantityInput}
+                                    type="number"
+                                    min={1}
+                                    max={100}
+                                    value={waterCost}
+                                    onChange={(e) => setWaterCost(Math.max(1, Math.min(100, parseInt(e.target.value) || 1)))}
+                                />
+                                <span className={styles.waterHelper}>
+                                    {remaining >= 0
+                                        ? `${remaining} of ${RESERVOIR_CAPACITY} remaining`
+                                        : `Over by ${Math.abs(remaining)}`}
+                                </span>
+                            </div>
+                        </div>
+                    )}
 
                     <div className={styles.actions}>
                         <button type="button" className={styles.cancelBtn} onClick={onClose}>

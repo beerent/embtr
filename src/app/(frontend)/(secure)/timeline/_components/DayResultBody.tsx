@@ -2,6 +2,7 @@
 
 import { Check } from 'lucide-react';
 import { TimelineCompletedTask } from '@/shared/types/timeline';
+import type { BucketFillData } from '@/shared/types/bucket';
 import styles from './DayResultBody.module.css';
 
 interface DayResultBodyProps {
@@ -10,11 +11,12 @@ interface DayResultBodyProps {
     dayScore: number | null;
     completedTasks: TimelineCompletedTask[];
     totalTaskCount: number | null;
+    bucketFillLevels: BucketFillData[] | null;
 }
 
 const MAX_VISIBLE_TASKS = 4;
 
-export function DayResultBody({ body, dayDate, dayScore, completedTasks, totalTaskCount }: DayResultBodyProps) {
+export function DayResultBody({ body, dayDate, dayScore, completedTasks, totalTaskCount, bucketFillLevels }: DayResultBodyProps) {
     const visibleTasks = completedTasks.slice(0, MAX_VISIBLE_TASKS);
     const overflowCount = completedTasks.length - MAX_VISIBLE_TASKS;
 
@@ -55,6 +57,30 @@ export function DayResultBody({ body, dayDate, dayScore, completedTasks, totalTa
                             and {overflowCount} more
                         </span>
                     )}
+                </div>
+            )}
+
+            {bucketFillLevels && bucketFillLevels.length > 0 && (
+                <div className={styles.bucketSection}>
+                    {bucketFillLevels.map((fill, i) => (
+                        <div key={i} className={styles.bucketRow}>
+                            <span
+                                className={styles.bucketDot}
+                                style={{ backgroundColor: fill.bucketColor }}
+                            />
+                            <span className={styles.bucketName}>{fill.bucketName}</span>
+                            <div className={styles.bucketBar}>
+                                <div
+                                    className={styles.bucketFill}
+                                    style={{
+                                        width: `${fill.fillPercent}%`,
+                                        backgroundColor: fill.bucketColor,
+                                    }}
+                                />
+                            </div>
+                            <span className={styles.bucketPercent}>{fill.fillPercent}%</span>
+                        </div>
+                    ))}
                 </div>
             )}
         </div>

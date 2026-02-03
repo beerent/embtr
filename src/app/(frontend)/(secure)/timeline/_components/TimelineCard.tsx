@@ -128,6 +128,7 @@ export function TimelineCard({ post, onPostEdited, onPostDeleted }: TimelineCard
                     dayScore={post.dayScore}
                     completedTasks={post.completedTasks}
                     totalTaskCount={post.totalTaskCount}
+                    bucketFillLevels={post.bucketFillLevels}
                 />
             )}
 
