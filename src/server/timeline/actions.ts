@@ -12,6 +12,7 @@ import {
 } from '@/shared/types/timeline';
 import { mapPost } from './mapPost';
 import { refreshSubscriberStatus } from '../twitch/TwitchSubscriberService';
+import { notifyPostLiked } from '../notifications/notifyPostLiked';
 
 const TARGET_TYPE = 'timeline_post';
 
@@ -132,6 +133,11 @@ export async function toggleLike(
 
     const likeDao = new LikeDao();
     const result = await likeDao.toggle(userId, TARGET_TYPE, postId);
+
+    if (result.liked) {
+        notifyPostLiked(userId, postId).catch(() => {});
+    }
+
     return { success: true, liked: result.liked };
 }
 

@@ -5,6 +5,7 @@ import {
     computeStreakOnComplete,
     computeStreakOnUncomplete,
     computeToggleResult,
+    computeSetQuantityResult,
     isHardModeBlocked,
 } from '../CompletionService';
 
@@ -313,6 +314,50 @@ describe('computeToggleResult', () => {
 
     it('defaults when fields undefined', () => {
         expect(computeToggleResult({ status: 'incomplete' }))
+            .toEqual({ status: 'complete', completedQuantity: 1, isCompleting: true });
+    });
+});
+
+// ── computeSetQuantityResult ─────────────────────────────────────────
+
+describe('computeSetQuantityResult', () => {
+    it('sets to full quantity → complete', () => {
+        expect(computeSetQuantityResult({ status: 'incomplete', quantity: 5, completedQuantity: 0 }, 5))
+            .toEqual({ status: 'complete', completedQuantity: 5, isCompleting: true });
+    });
+
+    it('sets to partial quantity → incomplete', () => {
+        expect(computeSetQuantityResult({ status: 'incomplete', quantity: 10, completedQuantity: 0 }, 4))
+            .toEqual({ status: 'incomplete', completedQuantity: 4, isCompleting: false });
+    });
+
+    it('sets to zero → incomplete', () => {
+        expect(computeSetQuantityResult({ status: 'complete', quantity: 5, completedQuantity: 5 }, 0))
+            .toEqual({ status: 'incomplete', completedQuantity: 0, isCompleting: false });
+    });
+
+    it('clamps negative to zero', () => {
+        expect(computeSetQuantityResult({ status: 'incomplete', quantity: 5, completedQuantity: 3 }, -2))
+            .toEqual({ status: 'incomplete', completedQuantity: 0, isCompleting: false });
+    });
+
+    it('clamps above max to quantity', () => {
+        expect(computeSetQuantityResult({ status: 'incomplete', quantity: 5, completedQuantity: 0 }, 999))
+            .toEqual({ status: 'complete', completedQuantity: 5, isCompleting: true });
+    });
+
+    it('already complete, set to same quantity → isCompleting false', () => {
+        expect(computeSetQuantityResult({ status: 'complete', quantity: 3, completedQuantity: 3 }, 3))
+            .toEqual({ status: 'complete', completedQuantity: 3, isCompleting: false });
+    });
+
+    it('complete → lower partial quantity', () => {
+        expect(computeSetQuantityResult({ status: 'complete', quantity: 10, completedQuantity: 10 }, 7))
+            .toEqual({ status: 'incomplete', completedQuantity: 7, isCompleting: false });
+    });
+
+    it('defaults when quantity fields undefined', () => {
+        expect(computeSetQuantityResult({ status: 'incomplete' }, 1))
             .toEqual({ status: 'complete', completedQuantity: 1, isCompleting: true });
     });
 });

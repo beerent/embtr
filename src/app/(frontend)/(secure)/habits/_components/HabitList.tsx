@@ -104,9 +104,11 @@ export function HabitList({ habits }: HabitListProps) {
                                 <p className={styles.schedule}>
                                     {getScheduleSummary(habit.scheduledDays)}
                                 </p>
-                                <p className={styles.quantity}>
-                                    {habit.quantity} {habit.unit || 'times'}
-                                </p>
+                                {habit.quantity > 1 && (
+                                    <p className={styles.quantity}>
+                                        {habit.quantity} {habit.unit || 'times'}
+                                    </p>
+                                )}
                             </div>
                         );
                     })}

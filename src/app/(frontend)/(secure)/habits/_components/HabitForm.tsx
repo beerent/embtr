@@ -45,6 +45,9 @@ export function HabitForm({ habit, onClose }: HabitFormProps) {
     const [selectedDays, setSelectedDays] = useState<number[]>(
         habit?.scheduledDays ?? [0, 1, 2, 3, 4, 5, 6]
     );
+    const [trackQuantity, setTrackQuantity] = useState<boolean>(
+        (habit?.quantity ?? 1) > 1
+    );
     const [quantity, setQuantity] = useState<number>(habit?.quantity ?? 1);
     const [unit, setUnit] = useState<string>(habit?.unit ?? '');
     const [saving, setSaving] = useState(false);
@@ -62,14 +65,17 @@ export function HabitForm({ habit, onClose }: HabitFormProps) {
         setSaving(true);
         setError('');
 
+        const effectiveQuantity = trackQuantity ? quantity : 1;
+        const effectiveUnit = trackQuantity ? (unit.trim() || null) : null;
+
         if (isEdit) {
             const res = await updateHabit(habit.id, {
                 title: title.trim(),
                 description: description.trim() || undefined,
                 iconName,
                 iconColor,
-                quantity,
-                unit: unit.trim() || null,
+                quantity: effectiveQuantity,
+                unit: effectiveUnit,
             });
             if (!res.success) {
                 setError(res.error || 'Failed to update habit.');
@@ -88,8 +94,8 @@ export function HabitForm({ habit, onClose }: HabitFormProps) {
                 description.trim() || undefined,
                 iconName,
                 iconColor,
-                quantity > 1 ? quantity : undefined,
-                unit.trim() || undefined
+                effectiveQuantity > 1 ? effectiveQuantity : undefined,
+                effectiveUnit || undefined
             );
             if (!res.success) {
                 setError(res.error || 'Failed to create habit.');
@@ -178,26 +184,42 @@ export function HabitForm({ habit, onClose }: HabitFormProps) {
                     </div>
 
                     <div className={styles.fieldGroup}>
-                        <span className={styles.fieldLabel}>Quantity Goal</span>
-                        <div className={styles.quantityRow}>
-                            <input
-                                className={styles.quantityInput}
-                                type="number"
-                                min={1}
-                                max={1000}
-                                value={quantity}
-                                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                                placeholder="1"
-                            />
-                            <input
-                                className={styles.unitInput}
-                                type="text"
-                                value={unit}
-                                onChange={(e) => setUnit(e.target.value)}
-                                placeholder="e.g. glasses, pages, minutes"
-                                maxLength={50}
-                            />
-                        </div>
+                        <label className={styles.toggleRow}>
+                            <span className={styles.fieldLabel}>Track quantity</span>
+                            <button
+                                type="button"
+                                role="switch"
+                                aria-checked={trackQuantity}
+                                className={`${styles.toggle} ${trackQuantity ? styles.toggleOn : ''}`}
+                                onClick={() => {
+                                    setTrackQuantity((v) => !v);
+                                    if (!trackQuantity && quantity <= 1) setQuantity(2);
+                                }}
+                            >
+                                <span className={styles.toggleThumb} />
+                            </button>
+                        </label>
+                        {trackQuantity && (
+                            <div className={styles.quantityRow}>
+                                <input
+                                    className={styles.quantityInput}
+                                    type="number"
+                                    min={2}
+                                    max={1000}
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(Math.max(2, parseInt(e.target.value) || 2))}
+                                    placeholder="2"
+                                />
+                                <input
+                                    className={styles.unitInput}
+                                    type="text"
+                                    value={unit}
+                                    onChange={(e) => setUnit(e.target.value)}
+                                    placeholder="e.g. glasses, pages, minutes"
+                                    maxLength={50}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <div className={styles.actions}>

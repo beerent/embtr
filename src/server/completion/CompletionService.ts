@@ -128,6 +128,21 @@ export function computeToggleResult(task: {
     return { status: 'incomplete', completedQuantity: newCompleted, isCompleting: false };
 }
 
+export function computeSetQuantityResult(task: {
+    status: string;
+    quantity?: number;
+    completedQuantity?: number;
+}, newCompletedQuantity: number): { status: string; completedQuantity: number; isCompleting: boolean } {
+    const qty = task.quantity ?? 1;
+    const clamped = Math.max(0, Math.min(newCompletedQuantity, qty));
+
+    if (clamped >= qty) {
+        return { status: 'complete', completedQuantity: clamped, isCompleting: task.status !== 'complete' };
+    }
+
+    return { status: 'incomplete', completedQuantity: clamped, isCompleting: false };
+}
+
 export function isHardModeBlocked(
     hardModeEnabled: boolean,
     taskDate: string,

@@ -171,9 +171,62 @@
     color: var(--text-muted);
 }
 
+.quantityTaskRow {
+    cursor: default;
+}
+
+.quantityTaskRow .checkbox {
+    cursor: pointer;
+}
+
 .quantityProgress {
     font-size: 0.75rem;
     color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.quantityInlineInput {
+    width: 3.5em;
+    background: var(--input-bg);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-input);
+    padding: 1px 4px;
+    color: var(--text-primary);
+    font-size: 0.75rem;
+    font-family: inherit;
+    text-align: center;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(241, 78, 107, 0.15);
+}
+
+.quantityInlineInput::-webkit-inner-spin-button,
+.quantityInlineInput::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.quantityInlineInput[type=number] {
+    -moz-appearance: textfield;
+}
+
+.quantityEditBtn {
+    background: none;
+    border: none;
+    border-bottom: 1px dashed var(--text-muted);
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-family: inherit;
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+    transition: color var(--transition-fast);
+}
+
+.quantityEditBtn:hover {
+    color: var(--text-primary);
 }
 
 .partialCount {

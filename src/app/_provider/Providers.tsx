@@ -3,6 +3,7 @@
 import React from 'react';
 
 import { SessionProvider } from '@/client/context/SessionProvider';
+import { NotificationProvider } from '@/client/context/NotificationProvider';
 import { SessionUser } from '@/shared/types/SessionUser';
 
 interface Props {
@@ -13,7 +14,11 @@ interface Props {
 export default function Providers({ children, initialUser }: Props) {
     return (
         <SessionProvider initialUser={initialUser}>
-            {children}
+            {initialUser ? (
+                <NotificationProvider>{children}</NotificationProvider>
+            ) : (
+                children
+            )}
         </SessionProvider>
     );
 }

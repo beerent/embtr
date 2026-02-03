@@ -15,6 +15,7 @@ import {
     computeStreakOnComplete,
     computeStreakOnUncomplete,
     computeToggleResult,
+    computeSetQuantityResult,
     isHardModeBlocked,
 } from '../completion/CompletionService';
 
@@ -217,6 +218,91 @@ export async function toggleTaskStatus(
     });
 
     return { success: true, status: newStatus, dayStatus, completedQuantity: newCompletedQuantity };
+}
+
+export async function setTaskCompletedQuantity(
+    plannedTaskId: number,
+    newCompletedQuantity: number
+): Promise<{ success: boolean; error?: string; status?: string; dayStatus?: string; completedQuantity?: number }> {
+    const userId = await getSessionUserId();
+    if (!userId) return { success: false, error: 'Not authenticated.' };
+
+    const plannedTaskDao = new PlannedTaskDao();
+    const task = await plannedTaskDao.getByIdWithDay(plannedTaskId);
+
+    if (!task || task.plannedDay.userId !== userId) {
+        return { success: false, error: 'Task not found.' };
+    }
+
+    const userDao = new UserDao();
+    const user = await userDao.getById(userId);
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    if (isHardModeBlocked(user?.hardMode ?? false, task.plannedDay.date, todayStr)) {
+        return { success: false, error: 'Hard mode: can only update today.' };
+    }
+
+    const result = computeSetQuantityResult(task, newCompletedQuantity);
+    const newStatus = result.status;
+    const newCompleted = result.completedQuantity;
+    const isCompleting = result.isCompleting;
+    const completedAt: Date | null = isCompleting ? new Date() : (newStatus === 'complete' ? task.completedAt : null);
+
+    const plannedDayId = task.plannedDayId;
+    const dayDate = task.plannedDay.date;
+
+    const dayStatus = await PrismaTransaction.execute(async (tx) => {
+        const txTaskDao = new PlannedTaskDao(tx);
+        const txDayDao = new PlannedDayDao(tx);
+        const txDayResultDao = new DayResultDao(tx);
+        const txStreakDao = new HabitStreakDao(tx);
+
+        await txTaskDao.update(plannedTaskId, {
+            completedQuantity: newCompleted,
+            status: newStatus,
+            completedAt,
+        });
+
+        const siblingTasks = await txTaskDao.getByPlannedDayId(plannedDayId);
+        const tasksWithUpdate = siblingTasks.map((t: any) =>
+            t.id === plannedTaskId
+                ? { ...t, status: newStatus, completedQuantity: newCompleted }
+                : t
+        );
+
+        const computedDayStatus = computeDayStatus(tasksWithUpdate);
+        await txDayDao.updateStatus(plannedDayId, computedDayStatus);
+
+        const score = computeDayScore(tasksWithUpdate);
+        await txDayResultDao.upsertByPlannedDay(userId, plannedDayId, dayDate, score);
+
+        if (task.habitId) {
+            const existingStreak = await txStreakDao.getByUserAndHabit(userId, task.habitId);
+
+            if (isCompleting) {
+                const newStreak = computeStreakOnComplete(existingStreak, dayDate);
+                await txStreakDao.upsert(userId, task.habitId, newStreak);
+            } else if (task.status === 'complete' && newStatus !== 'complete') {
+                const habitTasks = await txTaskDao.getByPlannedDayIdAndHabitId(
+                    plannedDayId,
+                    task.habitId
+                );
+                const stillCompletedToday = habitTasks.some(
+                    (ht: any) => ht.id !== plannedTaskId && ht.status === 'complete'
+                );
+                const newStreak = computeStreakOnUncomplete(
+                    existingStreak,
+                    dayDate,
+                    stillCompletedToday
+                );
+                await txStreakDao.upsert(userId, task.habitId, newStreak);
+            }
+        }
+
+        return computedDayStatus;
+    });
+
+    return { success: true, status: newStatus, dayStatus, completedQuantity: newCompleted };
 }
 
 function generateDateRange(startDate: string, endDate: string): string[] {
