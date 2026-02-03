@@ -106,6 +106,9 @@ export async function getPlannedDays(
         a.date.localeCompare(b.date)
     );
 
+    // Build lookup for habit icon colors
+    const habitColorMap = new Map(habits.map((h: any) => [h.id, h.iconColor]));
+
     const result: PlannedDayWithTasks[] = allPlannedDays.map((d: any) => ({
         id: d.id,
         date: d.date,
@@ -117,6 +120,7 @@ export async function getPlannedDays(
             status: t.status,
             habitId: t.habitId,
             completedAt: t.completedAt ? t.completedAt.toISOString() : null,
+            iconColor: t.habitId ? habitColorMap.get(t.habitId) ?? undefined : undefined,
             quantity: t.quantity ?? 1,
             completedQuantity: t.completedQuantity ?? 0,
             unit: t.unit ?? null,

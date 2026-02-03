@@ -1,10 +1,11 @@
 'use client';
 
-import { Check } from 'lucide-react';
 import { PlannedDayWithTasks } from '@/shared/types/habit';
 import styles from './MonthView.module.css';
 
 const WEEKDAY_HEADERS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+const DEFAULT_DOT_COLOR = '#4E73DF';
 
 interface MonthViewProps {
     currentDate: Date;
@@ -55,28 +56,36 @@ export function MonthView({ currentDate, plannedDays, onDayClick }: MonthViewPro
                     const planned = dayMap.get(dateStr);
                     const tasks = planned?.plannedTasks ?? [];
 
+                    const completedCount = tasks.filter((t) => t.status === 'complete').length;
+                    const allDone = tasks.length > 0 && completedCount === tasks.length;
+
                     return (
                         <div
                             key={dateStr}
-                            className={`${styles.cell} ${!isCurrentMonth ? styles.outside : ''}`}
+                            className={`${styles.cell} ${!isCurrentMonth ? styles.outside : ''} ${allDone ? styles.allComplete : ''}`}
                             onClick={() => onDayClick(day)}
                         >
                             <div className={styles.dayNumber}>
                                 <span className={isToday ? styles.today : ''}>{day.getDate()}</span>
                             </div>
-                            <div className={styles.taskList}>
-                                {tasks.slice(0, 3).map((task) => (
-                                    <div key={task.id} className={styles.taskPill}>
-                                        <span className={styles.taskTitle}>{task.title}</span>
-                                        {task.status === 'complete' && (
-                                            <Check size={12} className={styles.checkIcon} />
-                                        )}
-                                    </div>
-                                ))}
-                                {tasks.length > 3 && (
-                                    <span className={styles.more}>+{tasks.length - 3} more</span>
-                                )}
-                            </div>
+                            {tasks.length > 0 && (
+                                <div className={styles.dotCluster}>
+                                    {tasks.map((task) => {
+                                        const color = task.iconColor || DEFAULT_DOT_COLOR;
+                                        const isComplete = task.status === 'complete';
+                                        return (
+                                            <span
+                                                key={task.id}
+                                                className={`${styles.dot} ${isComplete ? styles.dotComplete : styles.dotIncomplete}`}
+                                                style={{
+                                                    '--dot-color': color,
+                                                } as React.CSSProperties}
+                                                title={task.title}
+                                            />
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
                     );
                 })}
