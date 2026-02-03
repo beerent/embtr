@@ -13,6 +13,7 @@ import {
 import { mapPost } from './mapPost';
 import { refreshSubscriberStatus } from '../twitch/TwitchSubscriberService';
 import { notifyPostLiked } from '../notifications/notifyPostLiked';
+import { notifyPostCommented } from '../notifications/notifyPostCommented';
 
 const TARGET_TYPE = 'timeline_post';
 
@@ -160,6 +161,9 @@ export async function addComment(
         targetId: parsed.data.postId,
         body: parsed.data.body,
     });
+
+    // Fire-and-forget comment notification
+    notifyPostCommented(userId, parsed.data.postId).catch(() => {});
 
     return {
         success: true,

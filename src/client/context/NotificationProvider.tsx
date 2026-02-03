@@ -3,8 +3,19 @@
 import { useEffect, useRef } from 'react';
 import { NotificationEvent } from '@/shared/types/notification';
 import { NotificationStore } from '@/client/store/NotificationStore';
+import { updateFaviconBadge } from '@/client/hooks/useFaviconBadge';
 
 const MAX_BACKOFF_MS = 30_000;
+
+function FaviconBadge() {
+    const { unreadCount } = NotificationStore.useStore();
+
+    useEffect(() => {
+        updateFaviconBadge(unreadCount);
+    }, [unreadCount]);
+
+    return null;
+}
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
     const backoffRef = useRef(1_000);
@@ -19,6 +30,11 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         } else if (typeof Notification !== 'undefined') {
             NotificationStore.getState().setPermissionStatus(Notification.permission);
         }
+    }, []);
+
+    // Hydrate from database on mount
+    useEffect(() => {
+        NotificationStore.getState().fetchInitial();
     }, []);
 
     useEffect(() => {
@@ -39,7 +55,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
                     // Show desktop notification
                     if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
                         new Notification(event.message, {
-                            tag: event.id,
+                            tag: String(event.id),
                         });
                     }
 
@@ -52,6 +68,8 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
             es.onopen = () => {
                 backoffRef.current = 1_000;
+                // Re-sync unread count on reconnect
+                NotificationStore.getState().fetchUnreadCount();
             };
 
             es.onerror = () => {
@@ -79,5 +97,10 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         };
     }, []);
 
-    return <>{children}</>;
+    return (
+        <>
+            <FaviconBadge />
+            {children}
+        </>
+    );
 }

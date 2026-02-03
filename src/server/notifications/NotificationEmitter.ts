@@ -7,18 +7,12 @@ declare const globalThis: {
     notificationEmitterGlobal: EventEmitter;
 } & typeof global;
 
-let _emitter: EventEmitter | null = globalThis.notificationEmitterGlobal ?? null;
-
 function getEmitter(): EventEmitter {
-    if (!_emitter) {
-        _emitter = new EventEmitter();
-        _emitter.setMaxListeners(0);
-
-        if (process.env.NODE_ENV !== 'production') {
-            globalThis.notificationEmitterGlobal = _emitter;
-        }
+    if (!globalThis.notificationEmitterGlobal) {
+        globalThis.notificationEmitterGlobal = new EventEmitter();
+        globalThis.notificationEmitterGlobal.setMaxListeners(0);
     }
-    return _emitter;
+    return globalThis.notificationEmitterGlobal;
 }
 
 export namespace NotificationEmitter {

@@ -8,6 +8,7 @@ import { Menu, PanelLeftClose, Sun, Moon, User, Settings, LogOut, Bug } from 'lu
 import { SessionStore } from '@/client/store/SessionStore';
 import useThemeStore from '@/client/store/ThemeStore';
 import { signOut } from '@/server/auth/actions';
+import NotificationBell from './NotificationBell';
 import styles from './ModernHeader.module.css';
 
 interface ModernHeaderProps {
@@ -113,6 +114,8 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({ onToggleSidebar, isSidebarC
                     <Link href="/bugs" className={styles.action} title="Bug Reports">
                         <Bug size={20} />
                     </Link>
+
+                    <NotificationBell />
 
                     <div className={dropdownClass} ref={profileDropdown.ref}>
                         <button className={styles.profileButton} onClick={profileDropdown.toggle}>

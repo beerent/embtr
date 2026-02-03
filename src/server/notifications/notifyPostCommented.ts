@@ -3,12 +3,12 @@ import { UserDao } from '@/server/database/UserDao';
 import { NotificationDao } from '@/server/database/NotificationDao';
 import { NotificationEmitter } from './NotificationEmitter';
 
-export async function notifyPostLiked(actorUserId: number, postId: number): Promise<void> {
+export async function notifyPostCommented(actorUserId: number, postId: number): Promise<void> {
     const postDao = new TimelinePostDao();
     const post = await postDao.getById(postId);
     if (!post) return;
 
-    // Don't notify on self-likes
+    // Don't notify on self-comments
     if (post.userId === actorUserId) return;
 
     const userDao = new UserDao();
@@ -16,14 +16,14 @@ export async function notifyPostLiked(actorUserId: number, postId: number): Prom
     if (!actor) return;
 
     const actorName = actor.displayName || actor.username;
-    const message = `${actorName} liked your post`;
+    const message = `${actorName} commented on your post`;
 
     // Persist to database
     const notificationDao = new NotificationDao();
     const row = await notificationDao.create({
         recipientUserId: post.userId,
         actorUserId,
-        type: 'POST_LIKED',
+        type: 'POST_COMMENTED',
         targetId: postId,
         message,
     });
@@ -31,7 +31,7 @@ export async function notifyPostLiked(actorUserId: number, postId: number): Prom
     // Emit for real-time SSE
     NotificationEmitter.emit({
         id: row.id,
-        type: 'POST_LIKED',
+        type: 'POST_COMMENTED',
         recipientUserId: post.userId,
         actorUserId,
         actorName,
